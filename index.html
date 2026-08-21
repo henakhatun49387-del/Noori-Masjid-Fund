@@ -11,7 +11,7 @@
         @media print {
             body * { visibility: hidden; }
             #receiptCard, #receiptCard * { visibility: visible; }
-            #receiptCard { position: absolute; left: 0; top: 0; width: 100%; }
+            #receiptCard { position: absolute; left: 0; top: 0; width: 100%; border: 2px solid #78350f; padding: 20px; }
         }
     </style>
 </head>
@@ -64,9 +64,25 @@
                     <i class="fa-solid fa-lock" id="adminLockIcon"></i>
                 </div>
                 <h3 id="adminStatusText" class="font-bold text-sm text-slate-800">एडमिन मोड बंद है</h3>
-                <p class="text-xs text-slate-500">केवल एडमिन ही पासवर्ड डालकर महीने एडिट कर सकता है।</p>
-                <button onclick="verifyAdmin()" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold text-xs shadow">
+                <p class="text-xs text-slate-500">पासवर्ड (1234) डालकर एडमिन लॉगिन करें।</p>
+                <button onclick="verifyAdmin()" id="adminLoginBtn" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold text-xs shadow">
                     एडमिन लॉगिन करें
+                </button>
+            </div>
+
+            <!-- Add Member Section (Visible only when Admin) -->
+            <div id="addMemberCard" class="hidden bg-white p-5 rounded-2xl shadow-sm border border-emerald-200 space-y-3">
+                <h3 class="font-bold text-sm text-emerald-800"><i class="fa-solid fa-user-plus mr-1"></i> नया सदस्य जोड़ें</h3>
+                <div>
+                    <label class="text-[11px] font-bold text-slate-600 block mb-1">सदस्य का नाम (Member Name)</label>
+                    <input type="text" id="newMemberName" placeholder="जैसे: MD Asif" class="w-full bg-slate-50 border border-slate-300 text-xs px-3 py-2.5 rounded-xl outline-none focus:border-emerald-600">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-slate-600 block mb-1">आईडी नंबर (ID Number)</label>
+                    <input type="number" id="newMemberId" placeholder="जैसे: 133" class="w-full bg-slate-50 border border-slate-300 text-xs px-3 py-2.5 rounded-xl outline-none focus:border-emerald-600">
+                </div>
+                <button onclick="addNewMember()" class="w-full bg-emerald-700 text-white py-3 rounded-xl font-bold text-xs shadow">
+                    सदस्य लिस्ट में जोड़ें
                 </button>
             </div>
         </div>
@@ -96,39 +112,42 @@
                 </div>
             </div>
 
-            <p class="text-xs font-bold text-slate-600 mb-2">12 महीने का हिसाब (एडमिन लॉगिन के बाद क्लिक करके बदलें):</p>
+            <p class="text-xs font-bold text-slate-600 mb-2">12 महीने का हिसाब (क्लिक करके राशि और तारीख बदलें):</p>
             <div id="ledgerGrid" class="grid grid-cols-3 gap-2 mb-4"></div>
 
             <!-- Payment / QR Code Section -->
             <div id="paymentSection" class="hidden bg-slate-50 p-4 rounded-2xl border mb-4 text-center space-y-3">
-                <p class="text-xs font-bold text-rose-600">कुछ महीनों का बकाया (Unpaid) बाकी है।</p>
+                <p class="text-xs font-bold text-rose-600">बकाया राशि बाकी है।</p>
                 <p class="text-xs text-slate-600">नीचे दिए गए QR Code को स्कैन करके पेमेंट करें:</p>
                 <div class="bg-white p-3 inline-block rounded-xl border shadow-sm">
                     <div class="w-36 h-36 bg-slate-100 mx-auto flex items-center justify-center text-xs text-slate-500 font-bold overflow-hidden rounded">
-                        <img src="https://i.ibb.co/3ykV20v/qr-placeholder.jpg" alt="PhonePe QR" id="qrImg" class="w-full h-full object-cover">
+                        <img src="1000189925.jpg" alt="PhonePe QR" class="w-full h-full object-cover" onerror="this.src='https://i.ibb.co/3ykV20v/qr-placeholder.jpg'">
                     </div>
                     <p class="text-[11px] font-bold text-slate-800 mt-2">MD SAIF ALI</p>
                     <p class="text-[9px] text-slate-500">PhonePe Accepted Here</p>
                 </div>
             </div>
 
-            <!-- PDF Receipt Area -->
-            <div id="receiptCard" class="bg-white border border-slate-300 p-5 rounded-2xl mb-4 hidden shadow-inner">
-                <div class="text-center border-b pb-3 mb-3">
-                    <p class="text-[10px] text-slate-500">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
-                    <h4 class="font-bold text-sm tracking-wide text-slate-800">NOORI MASJID</h4>
-                    <p class="text-[10px] text-slate-500 uppercase tracking-widest">Monthly Fund Receipt</p>
+            <!-- Professional PDF Receipt Card -->
+            <div id="receiptCard" class="bg-white border-2 border-amber-900 p-6 rounded-2xl mb-4 hidden shadow-md">
+                <div class="text-center border-b border-amber-900/30 pb-3 mb-3">
+                    <p class="text-[11px] text-amber-900 font-medium">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+                    <h3 class="font-bold text-base tracking-wide text-slate-900">NOORI MASJID</h3>
+                    <p class="text-[10px] text-slate-600 uppercase tracking-widest font-semibold">Monthly Remuneration Receipt</p>
                 </div>
-                <div class="space-y-1.5 text-xs text-slate-700">
-                    <p><b>अंतिम अपडेट तारीख:</b> <span id="receiptDate">-</span></p>
-                    <p><b>सदस्य का नाम:</b> <span id="receiptName">-</span></p>
-                    <p><b>पर्पस:</b> Masjid Chanda (₹500/month)</p>
-                    <div class="bg-slate-50 border p-3 rounded-xl text-center mt-3">
-                        <p class="text-[11px] text-slate-500">कुल जमा राशि</p>
-                        <h3 id="receiptAmount" class="text-lg font-bold text-emerald-600">₹0</h3>
+                <div class="space-y-2 text-xs text-slate-800">
+                    <p class="flex justify-between border-b pb-1"><b>दिनांक (Date):</b> <span id="receiptDate">-</span></p>
+                    <p class="flex justify-between border-b pb-1"><b>सदस्य का नाम:</b> <span id="receiptName">-</span></p>
+                    <p class="flex justify-between border-b pb-1"><b>पर्पस:</b> Masjid Chanda</p>
+                    <div class="bg-slate-50 border border-slate-300 p-3 rounded-xl text-center mt-3">
+                        <p class="text-[11px] text-slate-600 font-medium">Total Amount Received</p>
+                        <h3 id="receiptAmount" class="text-xl font-bold text-emerald-700">₹0</h3>
                     </div>
                 </div>
-                <p class="text-[9px] text-center text-slate-400 mt-4">JazakAllah Khair! May Allah accept this contribution.</p>
+                <p class="text-[10px] text-center text-slate-500 mt-4 italic">JazakAllah Khair! May Allah accept this contribution.</p>
+                <div class="text-right mt-6">
+                    <p class="text-[11px] font-bold text-slate-800">Authorized Signatory</p>
+                </div>
             </div>
 
             <button onclick="downloadReceiptPDF()" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold text-xs shadow mb-2 flex items-center justify-center gap-2">
@@ -149,47 +168,43 @@
         let isAdmin = localStorage.getItem('nooriAdminLoggedIn') === 'true';
 
         const defaultMembers = [
-            { id: 101, name: "MD Salim (एम डी सलीम)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 102, name: "MD Haleem (एम डी हलीम)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 103, name: "MD Mustaqim (एम डी मुर्तकीम)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 104, name: "MD Akbar (एम डी अकबर)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 105, name: "MD Hakim (एम डी हकीम)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 106, name: "Md Kalam (एम डी कलाम)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 107, name: "MD Idris (एम डी इद्रीस)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 108, name: "MD Salam (एम डी सलाम)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 109, name: "MD Javed (एम डी जावेद)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 110, name: "Md Hanif (एम डी हनीफ)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 111, name: "MD Rashid (एम डी रशीद)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 112, name: "MD Gafoor (एम डी गफ्फार)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 113, name: "MD Anwar (एम डी अनवर)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 114, name: "MD Shamim (एम डी शमीम)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 115, name: "MD Zahir (एम डी जाहिर)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 116, name: "MD Farooq (एम डी फारूक)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 117, name: "MD Nazir (एम डी नजीर)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 118, name: "MD Qasim (एम डी कासिम)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 119, name: "MD Habib (एम डी हबीब)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 120, name: "MD Latif (एम डी लतीफ)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 121, name: "MD Sohail (एम डी सोहेल)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 122, name: "MD Arman (एम डी अरमान)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 123, name: "MD Danish (एम डी दानिश)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 124, name: "MD Aslam (एम डी असलम)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 125, name: "MD Irfan (एम डी इरफान)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 126, name: "MD Imran (एम डी इमरान)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 127, name: "MD Shahbaz (एम डी शाहबाज)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 128, name: "MD Altaf (एम डी अल्ताफ)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 129, name: "MD Shahnawaz (एम डी शाहनवाज)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 130, name: "MD Faiyaz (एम डी फैयाज)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 131, name: "MD Tanveer (एम डी तनवीर)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
-            { id: 132, name: "MD Wasim (एम डी वसीम)", paid: Array(12).fill(false), lastUpdated: "नया खाता" }
+            { id: 101, name: "MD Salim (एम डी सलीम)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 102, name: "MD Haleem (एम डी हलीम)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 103, name: "MD Mustaqim (एम डी मुर्तकीम)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 104, name: "MD Akbar (एम डी अकबर)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 105, name: "MD Hakim (एम डी हकीम)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 106, name: "Md Kalam (एम डी कलाम)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 107, name: "MD Idris (एम डी इद्रीस)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 108, name: "MD Salam (एम डी सलाम)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 109, name: "MD Javed (एम डी जावेद)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 110, name: "Md Hanif (एम डी हनीफ)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 111, name: "MD Rashid (एम डी रशीद)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 112, name: "MD Gafoor (एम डी गफ्फार)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 113, name: "MD Anwar (एम डी अनवर)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 114, name: "MD Shamim (एम डी शमीम)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 115, name: "MD Zahir (एम डी जाहिर)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 116, name: "MD Farooq (एम डी फारूक)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 117, name: "MD Nazir (एम डी नजीर)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 118, name: "MD Qasim (एम डी कासिम)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 119, name: "MD Habib (एम डी हबीब)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 120, name: "MD Latif (एम डी लतीफ)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 121, name: "MD Sohail (एम डी सोहेल)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 122, name: "MD Arman (एम डी अरमान)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 123, name: "MD Danish (एम डी दानिश)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 124, name: "MD Aslam (एम डी असलम)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 125, name: "MD Irfan (एम डी इरफान)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 126, name: "MD Imran (एम डी इमरान)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 127, name: "MD Shahbaz (एम डी शाहबाज)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 128, name: "MD Altaf (एम डी अल्ताफ)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 129, name: "MD Shahnawaz (एम डी शाहनवाज)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 130, name: "MD Faiyaz (एम डी फैयाज)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 131, name: "MD Tanveer (एम डी तनवीर)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 132, name: "MD Wasim (एम डी वसीम)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" }
         ];
 
-        let members = JSON.parse(localStorage.getItem('nooriVillageApp_v5')) || defaultMembers;
+        let members = JSON.parse(localStorage.getItem('nooriVillageApp_v7')) || defaultMembers;
 
-        // Check initial admin state UI
-        if(isAdmin) {
-            document.getElementById('adminLockIcon').className = "fa-solid fa-lock-open text-emerald-600";
-            document.getElementById('adminStatusText').innerText = "एडमिन मोड चालू है";
-        }
+        updateAdminUI();
 
         function switchTab(tab) {
             document.getElementById('viewList').classList.add('hidden');
@@ -213,13 +228,74 @@
             }
         }
 
+        function updateAdminUI() {
+            if(isAdmin) {
+                document.getElementById('adminLockIcon').className = "fa-solid fa-lock-open text-emerald-600";
+                document.getElementById('adminStatusText').innerText = "एडमिन मोड चालू है";
+                document.getElementById('adminLoginBtn').innerText = "लॉग आउट करें";
+                document.getElementById('addMemberCard').classList.remove('hidden');
+            } else {
+                document.getElementById('adminLockIcon').className = "fa-solid fa-lock text-slate-700";
+                document.getElementById('adminStatusText').innerText = "एडमिन मोड बंद है";
+                document.getElementById('adminLoginBtn').innerText = "एडमिन लॉगिन करें";
+                document.getElementById('addMemberCard').classList.add('hidden');
+            }
+        }
+
+        function verifyAdmin() {
+            if(isAdmin) {
+                if(confirm("क्या आप एडमिन से लॉग आउट करना चाहते हैं?")) {
+                    isAdmin = false;
+                    localStorage.setItem('nooriAdminLoggedIn', 'false');
+                    updateAdminUI();
+                }
+                return;
+            }
+            let pass = prompt("एडमिन पासवर्ड दर्ज करें:");
+            if(pass === "1234") {
+                isAdmin = true;
+                localStorage.setItem('nooriAdminLoggedIn', 'true');
+                updateAdminUI();
+                alert("सफलतापूर्वक लॉगिन हो गए!");
+                switchTab('list');
+            } else {
+                alert("गलत पासवर्ड!");
+            }
+        }
+
+        function addNewMember() {
+            let name = document.getElementById('newMemberName').value.trim();
+            let id = parseInt(document.getElementById('newMemberId').value);
+
+            if(!name || !id) {
+                alert("कृपया सदस्य का नाम और सही आईडी नंबर दोनों भरें!");
+                return;
+            }
+
+            if(members.some(m => m.id === id)) {
+                alert("यह आईडी नंबर पहले से मौजूद है! दूसरी आईडी डालें।");
+                return;
+            }
+
+            members.unshift({
+                id: id,
+                name: name,
+                months: Array(12).fill({ paid: false, amount: 0, date: "" }),
+                lastUpdated: "नया सदस्य"
+            });
+
+            localStorage.setItem('nooriVillageApp_v7', JSON.stringify(members));
+            document.getElementById('newMemberName').value = "";
+            document.getElementById('newMemberId').value = "";
+            alert("नया सदस्य सफलतापूर्वक जोड़ दिया गया है!");
+            switchTab('list');
+        }
+
         function renderFullList() {
             let container = document.getElementById('fullMemberList');
             container.innerHTML = members.map(m => {
-                let count = m.paid.filter(Boolean).length;
-                let statusBadge = count > 0 
-                    ? `<span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Paid (${count})</span>` 
-                    : `<span class="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded-full">Unpaid</span>`;
+                let totalPaidAmt = m.months.reduce((sum, mo) => sum + (mo.paid ? Number(mo.amount || 0) : 0), 0);
+                let paidCount = m.months.filter(mo => mo.paid).length;
                 return `
                     <div onclick="openLedger(${m.id})" class="bg-white p-3.5 rounded-2xl border border-slate-200 flex justify-between items-center cursor-pointer shadow-sm">
                         <div class="flex items-center space-x-3">
@@ -230,8 +306,8 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <span class="text-sm font-bold text-emerald-600 block">₹${count * 500}</span>
-                            ${statusBadge}
+                            <span class="text-sm font-bold text-emerald-600 block">₹${totalPaidAmt}</span>
+                            <span class="text-[10px] text-slate-500 font-medium">महीने जमा: ${paidCount}/12</span>
                         </div>
                     </div>
                 `;
@@ -244,10 +320,8 @@
             let container = document.getElementById('searchResults');
             
             container.innerHTML = res.map(m => {
-                let count = m.paid.filter(Boolean).length;
-                let statusBadge = count > 0 
-                    ? `<span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Paid</span>` 
-                    : `<span class="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded-full">Unpaid</span>`;
+                let totalPaidAmt = m.months.reduce((sum, mo) => sum + (mo.paid ? Number(mo.amount || 0) : 0), 0);
+                let paidCount = m.months.filter(mo => mo.paid).length;
                 return `
                     <div onclick="openLedger(${m.id})" class="bg-white p-3.5 rounded-2xl border border-slate-200 flex justify-between items-center cursor-pointer shadow-sm">
                         <div>
@@ -255,8 +329,8 @@
                             <h4 class="font-bold text-sm text-slate-800 mt-1">${m.name}</h4>
                         </div>
                         <div class="text-right">
-                            <span class="text-sm font-bold text-emerald-600">₹${count * 500}</span>
-                            <div class="mt-0.5">${statusBadge}</div>
+                            <span class="text-sm font-bold text-emerald-600">₹${totalPaidAmt}</span>
+                            <span class="text-[10px] text-slate-500 block">महीने: ${paidCount}/12</span>
                         </div>
                     </div>
                 `;
@@ -281,66 +355,62 @@
 
         function renderLedgerGrid() {
             let m = members.find(x => x.id === currentMemberId);
-            let count = m.paid.filter(Boolean).length;
-            let totalAmt = count * 500;
+            let totalAmt = m.months.reduce((sum, mo) => sum + (mo.paid ? Number(mo.amount || 0) : 0), 0);
+            let paidCount = m.months.filter(mo => mo.paid).length;
 
             document.getElementById('modalTotalAmt').innerText = "₹" + totalAmt;
             document.getElementById('receiptAmount').innerText = "₹" + totalAmt;
             document.getElementById('receiptDate').innerText = m.lastUpdated || "-";
 
             let statusEl = document.getElementById('modalStatusText');
-            if(count > 0) {
-                statusEl.innerText = `Paid (${count}/12)`;
-                statusEl.className = "text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 inline-block mt-1";
-            } else {
-                statusEl.innerText = "Unpaid (बाकी)";
-                statusEl.className = "text-xs font-bold px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 inline-block mt-1";
-            }
+            statusEl.innerText = `भुगतान: ${paidCount}/12 महीने`;
+            statusEl.className = "text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 inline-block mt-1";
 
-            if(count < 12) {
+            if(paidCount < 12) {
                 document.getElementById('paymentSection').classList.remove('hidden');
             } else {
                 document.getElementById('paymentSection').classList.add('hidden');
             }
 
             let grid = document.getElementById('ledgerGrid');
-            grid.innerHTML = monthNames.map((mon, idx) => `
-                <button type="button" onclick="toggleMonth(${idx})" class="p-2.5 text-xs rounded-xl border font-semibold transition ${m.paid[idx] ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-rose-50 text-rose-600 border-rose-200'}">
-                    ${mon} <br>${m.paid[idx] ? '✓ Paid' : '✗ Unpaid'}
-                </button>
-            `).join('');
+            grid.innerHTML = monthNames.map((mon, idx) => {
+                let moData = m.months[idx];
+                return `
+                    <button type="button" onclick="editMonth(${idx})" class="p-2.5 text-xs rounded-xl border font-semibold transition text-left ${moData.paid ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 text-slate-700 border-slate-200'}">
+                        <div class="font-bold">${mon}</div>
+                        <div class="text-[10px] mt-0.5">${moData.paid ? `✓ ₹${moData.amount}<br>${moData.date}` : '✗ बकाया'}</div>
+                    </button>
+                `;
+            }).join('');
         }
 
-        function toggleMonth(idx) {
+        function editMonth(idx) {
             if(!isAdmin) {
-                alert("सुरक्षा चेतावनी: आप एडमिन नहीं हैं! पहले 'एडमिन' टैब में जाकर सही पासवर्ड डालें तभी महीने बदल पाएंगे।");
+                alert("सुरक्षा चेतावनी: आप एडमिन नहीं हैं! पहले 'एडमिन' टैब में जाकर पासवर्ड (1234) डालें।");
                 return;
             }
             let m = members.find(x => x.id === currentMemberId);
-            m.paid[idx] = !m.paid[idx];
-            
-            let now = new Date();
-            let dateStr = now.toLocaleDateString('hi-IN', { day: 'numeric', month: 'long', year: 'numeric' });
-            let timeStr = now.toLocaleTimeString('hi-IN', { hour: '2-digit', minute: '2-digit' });
-            m.lastUpdated = `${dateStr}, ${timeStr}`;
+            let cur = m.months[idx];
 
-            localStorage.setItem('nooriVillageApp_v5', JSON.stringify(members));
+            let action = confirm(`महीना: ${monthNames[idx]}\nस्थिति बदलें?\n[OK] - जमा (Paid) करें\n[Cancel] - बकाया (Unpaid) करें`);
+            
+            if(action) {
+                let amt = prompt("कितना पैसा दिया गया है? (रुपये लिखें जैसे 500):", cur.amount || "500");
+                if(amt === null) return;
+                let dateInput = prompt("तारीख और समय दर्ज करें:", new Date().toLocaleDateString('hi-IN') + ", " + new Date().toLocaleTimeString('hi-IN', {hour: '2-digit', minute:'2-digit'}));
+                if(dateInput === null) return;
+
+                m.months[idx] = { paid: true, amount: amt, date: dateInput };
+                m.lastUpdated = dateInput;
+            } else {
+                m.months[idx] = { paid: false, amount: 0, date: "" };
+                let now = new Date();
+                m.lastUpdated = now.toLocaleDateString('hi-IN') + ", " + now.toLocaleTimeString('hi-IN', {hour: '2-digit', minute:'2-digit'});
+            }
+
+            localStorage.setItem('nooriVillageApp_v7', JSON.stringify(members));
             renderLedgerGrid();
             renderFullList();
-        }
-
-        function verifyAdmin() {
-            let pass = prompt("एडमिन पासवर्ड दर्ज करें:");
-            if(pass === "1234") {
-                isAdmin = true;
-                localStorage.setItem('nooriAdminLoggedIn', 'true');
-                document.getElementById('adminLockIcon').className = "fa-solid fa-lock-open text-emerald-600";
-                document.getElementById('adminStatusText').innerText = "एडमिन मोड चालू है";
-                alert("सफलतापूर्वक लॉगिन हो गए! अब आप किसी भी मेंबर के महीने पर क्लिक करके बदल सकते हैं।");
-                switchTab('list');
-            } else {
-                alert("गलत पासवर्ड!");
-            }
         }
 
         function downloadReceiptPDF() {
