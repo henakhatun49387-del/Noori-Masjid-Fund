@@ -7,153 +7,240 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        #splash { position: fixed; inset: 0; background: #064e3b; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.5s ease; color: white; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta+Sans', sans-serif; }
+        #splash { position: fixed; inset: 0; background: linear-gradient(135deg, #064e3b, #022c22); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.5s ease; color: white; }
         @media print {
             body * { visibility: hidden; }
             #receiptCard, #receiptCard * { visibility: visible; }
-            #receiptCard { position: absolute; left: 0; top: 0; width: 100%; border: 2px solid #78350f; padding: 20px; }
+            #receiptCard { position: absolute; left: 0; top: 0; width: 100%; border: 2px solid #78350f; padding: 20px; background: white; }
         }
     </style>
 </head>
-<body class="bg-slate-100 pb-20">
+<body class="bg-slate-50 pb-24 text-slate-800">
 
     <!-- Splash Screen -->
     <div id="splash">
-        <div class="w-20 h-20 bg-emerald-700/50 rounded-full flex items-center justify-center mb-4 border border-emerald-500 shadow-lg">
-            <i class="fa-solid fa-moon text-4xl text-amber-300 animate-bounce"></i>
+        <div class="w-24 h-24 bg-emerald-600/30 rounded-3xl flex items-center justify-center mb-4 border border-emerald-400/30 shadow-2xl backdrop-blur-md">
+            <i class="fa-solid fa-mosque text-5xl text-amber-300 animate-pulse"></i>
         </div>
-        <h1 class="text-2xl font-bold tracking-wide">नूरी मस्जिद</h1>
-        <p class="text-xs text-emerald-200 mt-1 font-medium">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
-        <p class="text-[11px] text-emerald-300/80 mt-4">लोड हो रहा है...</p>
+        <h1 class="text-2xl font-bold tracking-wider text-white">नूरी मस्जिद</h1>
+        <p class="text-xs text-emerald-200 mt-1 font-medium tracking-widest">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+        <div class="w-8 h-1 bg-amber-400 rounded-full mt-4"></div>
     </div>
 
     <!-- Header -->
-    <header class="bg-emerald-800 text-white p-5 sticky top-0 z-40 shadow-md text-center">
-        <h2 class="font-bold text-lg"><i class="fa-solid fa-mosque mr-2 text-amber-300"></i>नूरी मस्जिद</h2>
-        <p class="text-xs text-emerald-200 mt-0.5">गाँव वाले लाइव डिजिटल हिसाब पोर्टल</p>
+    <header class="bg-gradient-to-r from-emerald-900 to-emerald-800 text-white p-5 sticky top-0 z-40 shadow-lg border-b border-emerald-700/50">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div>
+                <h2 class="font-bold text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-kaaba text-amber-300"></i> नूरी मस्जिद
+                </h2>
+                <p class="text-[11px] text-emerald-200/80 font-medium">गाँव वाले लाइव डिजिटल हिसाब पोर्टल</p>
+            </div>
+            <div class="bg-emerald-950/50 border border-emerald-700/50 px-3 py-1 rounded-full text-[10px] text-emerald-200 flex items-center gap-1.5 shadow-inner">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> लाइव पोर्टल
+            </div>
+        </div>
     </header>
 
     <!-- Navigation Tabs -->
-    <nav class="flex bg-white shadow-sm px-4 py-2.5 border-b justify-around sticky top-[76px] z-30">
-        <button onclick="switchTab('list')" id="tabList" class="font-bold text-sm text-emerald-700 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 transition">गाँव लिस्ट</button>
-        <button onclick="switchTab('search')" id="tabSearch" class="font-bold text-sm text-slate-500 px-4 py-1.5 rounded-full transition">सर्च करें</button>
-        <button onclick="switchTab('admin')" id="tabAdmin" class="font-bold text-sm text-slate-500 px-4 py-1.5 rounded-full transition">एडमिन</button>
+    <nav class="flex bg-white/80 backdrop-blur-md shadow-sm px-4 py-3 border-b justify-around sticky top-[77px] z-30 max-w-md mx-auto">
+        <button onclick="switchTab('list')" id="tabList" class="font-bold text-xs text-emerald-700 px-5 py-2 rounded-xl bg-emerald-50 border border-emerald-200 transition shadow-sm flex items-center gap-2">
+            <i class="fa-solid fa-users"></i> गाँव लिस्ट
+        </button>
+        <button onclick="switchTab('search')" id="tabSearch" class="font-bold text-xs text-slate-500 px-5 py-2 rounded-xl transition flex items-center gap-2">
+            <i class="fa-solid fa-magnifying-glass"></i> खोजें
+        </button>
+        <button onclick="switchTab('admin')" id="tabAdmin" class="font-bold text-xs text-slate-500 px-5 py-2 rounded-xl transition flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved"></i> एडमिन
+        </button>
     </nav>
 
     <!-- Main Content Area -->
-    <main class="p-4 max-w-md mx-auto">
+    <main class="p-4 max-w-md mx-auto space-y-4">
 
         <!-- 1. गाँव लिस्ट टैब -->
-        <div id="viewList" class="space-y-2">
-            <div id="fullMemberList" class="space-y-2"></div>
+        <div id="viewList" class="space-y-3">
+            <div class="bg-gradient-to-r from-amber-500 to-amber-600 text-white p-4 rounded-2xl shadow-md flex justify-between items-center">
+                <div>
+                    <p class="text-[11px] font-medium text-amber-100 uppercase tracking-wider">कुल वार्षिक संग्रह</p>
+                    <h3 id="totalCollectionAmt" class="text-2xl font-extrabold tracking-tight">₹0</h3>
+                </div>
+                <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-xl backdrop-blur-sm">
+                    <i class="fa-solid fa-wallet text-amber-200"></i>
+                </div>
+            </div>
+            <div id="fullMemberList" class="space-y-2.5"></div>
         </div>
 
         <!-- 2. सर्च टैब -->
         <div id="viewSearch" class="hidden space-y-4">
-            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
-                <label class="text-xs font-bold text-slate-600 block mb-2">नाम या ID लिखें</label>
-                <input type="text" id="searchInput" placeholder="जैसे: Salim या 101..." oninput="handleSearch()" class="w-full bg-slate-50 border border-slate-300 text-sm px-4 py-3 rounded-xl outline-none focus:border-emerald-600">
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80">
+                <label class="text-xs font-bold text-slate-600 block mb-2">नाम या आईडी से खोजें</label>
+                <div class="relative">
+                    <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+                    <input type="text" id="searchInput" placeholder="जैसे: Salim या 101..." oninput="handleSearch()" class="w-full bg-slate-50 border border-slate-200 text-sm pl-10 pr-4 py-3 rounded-xl outline-none focus:border-emerald-600 focus:bg-white transition">
+                </div>
             </div>
-            <div id="searchResults" class="space-y-2"></div>
+            <div id="searchResults" class="space-y-2.5"></div>
         </div>
 
         <!-- 3. एडमिन टैब -->
         <div id="viewAdmin" class="hidden space-y-4">
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 text-center space-y-3">
-                <div class="w-10 h-10 bg-slate-100 text-slate-700 rounded-full flex items-center justify-center mx-auto text-sm font-bold">
+            <!-- Login Box -->
+            <div id="adminLoginCard" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 text-center space-y-4">
+                <div class="w-12 h-12 bg-emerald-50 text-emerald-700 rounded-2xl flex items-center justify-center mx-auto text-base shadow-inner border border-emerald-100">
                     <i class="fa-solid fa-lock" id="adminLockIcon"></i>
                 </div>
-                <h3 id="adminStatusText" class="font-bold text-sm text-slate-800">एडमिन मोड बंद है</h3>
-                <p class="text-xs text-slate-500">पासवर्ड (1234) डालकर एडमिन लॉगिन करें।</p>
-                <button onclick="verifyAdmin()" id="adminLoginBtn" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold text-xs shadow">
-                    एडमिन लॉगिन करें
-                </button>
+                <div>
+                    <h3 id="adminStatusText" class="font-bold text-base text-slate-800">एडमिन पैनल सुरक्षित है</h3>
+                    <p class="text-xs text-slate-500 mt-1">पासवर्ड दर्ज करके कंट्रोल पैनल खोलें।</p>
+                </div>
+                <div class="space-y-3 pt-2">
+                    <input type="password" id="adminPasswordInput" placeholder="पासवर्ड दर्ज करें..." class="w-full bg-slate-50 border border-slate-200 text-sm text-center px-4 py-3 rounded-xl outline-none focus:border-emerald-600 transition">
+                    <button onclick="verifyAdmin()" class="w-full bg-emerald-800 hover:bg-emerald-900 text-white py-3 rounded-xl font-bold text-xs shadow-md transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i> एडमिन लॉगिन करें
+                    </button>
+                </div>
             </div>
 
-            <!-- Add Member Section (Visible only when Admin) -->
-            <div id="addMemberCard" class="hidden bg-white p-5 rounded-2xl shadow-sm border border-emerald-200 space-y-3">
-                <h3 class="font-bold text-sm text-emerald-800"><i class="fa-solid fa-user-plus mr-1"></i> नया सदस्य जोड़ें</h3>
-                <div>
-                    <label class="text-[11px] font-bold text-slate-600 block mb-1">सदस्य का नाम (Member Name)</label>
-                    <input type="text" id="newMemberName" placeholder="जैसे: MD Asif" class="w-full bg-slate-50 border border-slate-300 text-xs px-3 py-2.5 rounded-xl outline-none focus:border-emerald-600">
+            <!-- Master Admin Control Panel (Visible after login) -->
+            <div id="adminPanelContent" class="hidden space-y-4">
+                <div class="bg-emerald-900 text-white p-4 rounded-2xl flex justify-between items-center shadow">
+                    <div>
+                        <p class="text-xs text-emerald-200">स्वागत है, एडमिन साहब</p>
+                        <h4 class="font-bold text-sm">मास्टर कंट्रोल पैनल एक्टिव है</h4>
+                    </div>
+                    <button onclick="logoutAdmin()" class="bg-rose-500/80 hover:bg-rose-600 text-white text-xs px-3 py-1.5 rounded-xl font-bold transition shadow">
+                        लॉग आउट
+                    </button>
                 </div>
-                <div>
-                    <label class="text-[11px] font-bold text-slate-600 block mb-1">आईडी नंबर (ID Number)</label>
-                    <input type="number" id="newMemberId" placeholder="जैसे: 133" class="w-full bg-slate-50 border border-slate-300 text-xs px-3 py-2.5 rounded-xl outline-none focus:border-emerald-600">
+
+                <!-- Add New Member Box -->
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
+                    <h4 class="font-bold text-sm text-slate-800 flex items-center gap-2 border-b pb-2">
+                        <i class="fa-solid fa-user-plus text-emerald-600"></i> नया सदस्य जोड़ें
+                    </h4>
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-600 block mb-1">सदस्य का नाम</label>
+                        <input type="text" id="newMemberName" placeholder="जैसे: MD Asif" class="w-full bg-slate-50 border border-slate-200 text-xs px-3.5 py-3 rounded-xl outline-none focus:border-emerald-600">
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-600 block mb-1">आईडी नंबर</label>
+                        <input type="number" id="newMemberId" placeholder="जैसे: 133" class="w-full bg-slate-50 border border-slate-200 text-xs px-3.5 py-3 rounded-xl outline-none focus:border-emerald-600">
+                    </div>
+                    <button onclick="addNewMember()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white py-3 rounded-xl font-bold text-xs shadow transition">
+                        लिस्ट में जोड़ें
+                    </button>
                 </div>
-                <button onclick="addNewMember()" class="w-full bg-emerald-700 text-white py-3 rounded-xl font-bold text-xs shadow">
-                    सदस्य लिस्ट में जोड़ें
-                </button>
+
+                <!-- Direct Member Data Editor -->
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
+                    <h4 class="font-bold text-sm text-slate-800 flex items-center gap-2 border-b pb-2">
+                        <i class="fa-solid fa-pen-to-square text-emerald-600"></i> डायरेक्ट हिसाब एडिट करें
+                    </h4>
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-600 block mb-1">सदस्य चुनें</label>
+                        <select id="editMemberSelect" onchange="loadMemberDataForEdit()" class="w-full bg-slate-50 border border-slate-200 text-xs px-3.5 py-3 rounded-xl outline-none focus:border-emerald-600 font-semibold"></select>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-600 block mb-1">महीना चुनें</label>
+                        <select id="editMonthSelect" class="w-full bg-slate-50 border border-slate-200 text-xs px-3.5 py-3 rounded-xl outline-none focus:border-emerald-600 font-semibold">
+                            <option value="0">जनवरी</option><option value="1">फरवरी</option><option value="2">मार्च</option><option value="3">अप्रैल</option><option value="4">मई</option><option value="5">जून</option><option value="6">जुलाई</option><option value="7">अगस्त</option><option value="8">सितंबर</option><option value="9">अक्टूबर</option><option value="10">नवंबर</option><option value="11">दिसंबर</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-600 block mb-1">भुगतान स्थिति</label>
+                            <select id="editPaidStatus" class="w-full bg-slate-50 border border-slate-200 text-xs px-3 py-3 rounded-xl outline-none font-bold">
+                                <option value="true">Paid (जमा है)</option>
+                                <option value="false">Unpaid (बकाया)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-600 block mb-1">रुपये (Amount)</label>
+                            <input type="number" id="editAmountInput" value="500" class="w-full bg-slate-50 border border-slate-200 text-xs px-3.5 py-3 rounded-xl outline-none font-bold text-emerald-700">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-600 block mb-1">तारीख और समय (Date & Time)</label>
+                        <input type="text" id="editDateInput" class="w-full bg-slate-50 border border-slate-200 text-xs px-3.5 py-3 rounded-xl outline-none">
+                    </div>
+                    <button onclick="saveAdminDirectEdit()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-bold text-xs shadow transition">
+                        डेटा सेव / अपडेट करें
+                    </button>
+                </div>
             </div>
         </div>
 
     </main>
 
-    <!-- Modal for Ledger & Payment -->
-    <div id="ledgerModal" class="hidden fixed inset-0 bg-black/70 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto">
-        <div class="bg-white rounded-t-3xl sm:rounded-3xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
+    <!-- Modal for Member Receipt & QR Card -->
+    <div id="ledgerModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto">
+        <div class="bg-white rounded-t-3xl sm:rounded-3xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl animate-in fade-in zoom-in duration-200">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
                 <div>
                     <h3 id="modalName" class="font-bold text-base text-slate-900"></h3>
                     <p class="text-xs text-slate-500">आईडी: <span id="modalId"></span></p>
                 </div>
-                <button onclick="closeLedger()" class="bg-slate-100 p-2 rounded-full text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeLedger()" class="bg-slate-100 hover:bg-slate-200 w-8 h-8 rounded-full flex items-center justify-center text-slate-600 transition"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
             <!-- Total Box -->
-            <div class="bg-slate-50 p-4 rounded-2xl border mb-4 flex justify-between items-center">
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 mb-4 flex justify-between items-center">
                 <div>
-                    <p class="text-xs text-slate-500">कुल जमा राशि</p>
-                    <h4 id="modalTotalAmt" class="text-xl font-bold text-emerald-600">₹0</h4>
+                    <p class="text-xs text-slate-500 font-medium">कुल जमा राशि</p>
+                    <h4 id="modalTotalAmt" class="text-xl font-extrabold text-emerald-600">₹0</h4>
                 </div>
                 <div class="text-right">
-                    <p class="text-xs text-slate-500">स्थिति</p>
-                    <h4 id="modalStatusText" class="text-xs font-bold px-2.5 py-1 rounded-full inline-block mt-1"></h4>
+                    <p class="text-xs text-slate-500 font-medium">स्थिति</p>
+                    <h4 id="modalStatusText" class="text-xs font-bold px-3 py-1 rounded-full inline-block mt-1"></h4>
                 </div>
             </div>
 
-            <p class="text-xs font-bold text-slate-600 mb-2">12 महीने का हिसाब (क्लिक करके राशि और तारीख बदलें):</p>
+            <p class="text-xs font-bold text-slate-700 mb-2">12 महीने का हिसाब:</p>
             <div id="ledgerGrid" class="grid grid-cols-3 gap-2 mb-4"></div>
 
             <!-- Payment / QR Code Section -->
-            <div id="paymentSection" class="hidden bg-slate-50 p-4 rounded-2xl border mb-4 text-center space-y-3">
-                <p class="text-xs font-bold text-rose-600">बकाया राशि बाकी है।</p>
-                <p class="text-xs text-slate-600">नीचे दिए गए QR Code को स्कैन करके पेमेंट करें:</p>
-                <div class="bg-white p-3 inline-block rounded-xl border shadow-sm">
-                    <div class="w-36 h-36 bg-slate-100 mx-auto flex items-center justify-center text-xs text-slate-500 font-bold overflow-hidden rounded">
+            <div id="paymentSection" class="hidden bg-slate-50 p-4 rounded-2xl border border-slate-200 mb-4 text-center space-y-3">
+                <p class="text-xs font-bold text-rose-600">कुछ महीनों का बकाया बाकी है।</p>
+                <p class="text-xs text-slate-600">नीचे दिए गए QR Code को स्कैन करके ऑनलाइन पेमेंट करें:</p>
+                <div class="bg-white p-3 inline-block rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="w-36 h-36 bg-slate-100 mx-auto flex items-center justify-center text-xs text-slate-500 font-bold overflow-hidden rounded-xl">
                         <img src="1000189925.jpg" alt="PhonePe QR" class="w-full h-full object-cover" onerror="this.src='https://i.ibb.co/3ykV20v/qr-placeholder.jpg'">
                     </div>
                     <p class="text-[11px] font-bold text-slate-800 mt-2">MD SAIF ALI</p>
-                    <p class="text-[9px] text-slate-500">PhonePe Accepted Here</p>
+                    <p class="text-[9px] text-slate-500 font-medium">PhonePe Accepted Here</p>
                 </div>
             </div>
 
             <!-- Professional PDF Receipt Card -->
-            <div id="receiptCard" class="bg-white border-2 border-amber-900 p-6 rounded-2xl mb-4 hidden shadow-md">
+            <div id="receiptCard" class="bg-white border-2 border-amber-900/60 p-6 rounded-3xl mb-4 hidden shadow-inner">
                 <div class="text-center border-b border-amber-900/30 pb-3 mb-3">
-                    <p class="text-[11px] text-amber-900 font-medium">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
-                    <h3 class="font-bold text-base tracking-wide text-slate-900">NOORI MASJID</h3>
-                    <p class="text-[10px] text-slate-600 uppercase tracking-widest font-semibold">Monthly Remuneration Receipt</p>
+                    <p class="text-[11px] text-amber-900 font-semibold">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+                    <h3 class="font-extrabold text-base tracking-wide text-slate-900">NOORI MASJID</h3>
+                    <p class="text-[10px] text-slate-600 uppercase tracking-widest font-bold">Monthly Remuneration Receipt</p>
                 </div>
                 <div class="space-y-2 text-xs text-slate-800">
                     <p class="flex justify-between border-b pb-1"><b>दिनांक (Date):</b> <span id="receiptDate">-</span></p>
                     <p class="flex justify-between border-b pb-1"><b>सदस्य का नाम:</b> <span id="receiptName">-</span></p>
                     <p class="flex justify-between border-b pb-1"><b>पर्पस:</b> Masjid Chanda</p>
-                    <div class="bg-slate-50 border border-slate-300 p-3 rounded-xl text-center mt-3">
+                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl text-center mt-3">
                         <p class="text-[11px] text-slate-600 font-medium">Total Amount Received</p>
-                        <h3 id="receiptAmount" class="text-xl font-bold text-emerald-700">₹0</h3>
+                        <h3 id="receiptAmount" class="text-xl font-extrabold text-emerald-700">₹0</h3>
                     </div>
                 </div>
                 <p class="text-[10px] text-center text-slate-500 mt-4 italic">JazakAllah Khair! May Allah accept this contribution.</p>
                 <div class="text-right mt-6">
-                    <p class="text-[11px] font-bold text-slate-800">Authorized Signatory</p>
+                    <p class="text-[11px] font-extrabold text-slate-800">Authorized Signatory</p>
                 </div>
             </div>
 
-            <button onclick="downloadReceiptPDF()" class="w-full bg-slate-800 text-white py-3 rounded-xl font-bold text-xs shadow mb-2 flex items-center justify-center gap-2">
+            <button onclick="downloadReceiptPDF()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3.5 rounded-2xl font-bold text-xs shadow-md mb-2.5 flex items-center justify-center gap-2 transition">
                 <i class="fa-solid fa-file-arrow-down"></i> रसीद डाउनलोड (PDF) करें
             </button>
-            <button onclick="closeLedger()" class="w-full bg-slate-200 text-slate-700 py-2.5 rounded-xl font-bold text-xs">बंद करें</button>
+            <button onclick="closeLedger()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-2xl font-bold text-xs transition">बंद करें</button>
         </div>
     </div>
 
@@ -162,10 +249,10 @@
             let splash = document.getElementById('splash');
             splash.style.opacity = '0';
             setTimeout(() => splash.style.display = 'none', 500);
-        }, 1500);
+        }, 1200);
 
         const monthNames = ["जनवरी", "फरवरी", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"];
-        let isAdmin = localStorage.getItem('nooriAdminLoggedIn') === 'true';
+        let isAdmin = localStorage.getItem('nooriAdminLoggedIn_v8') === 'true';
 
         const defaultMembers = [
             { id: 101, name: "MD Salim (एम डी सलीम)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
@@ -190,7 +277,7 @@
             { id: 120, name: "MD Latif (एम डी लतीफ)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
             { id: 121, name: "MD Sohail (एम डी सोहेल)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
             { id: 122, name: "MD Arman (एम डी अरमान)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
-            { id: 123, name: "MD Danish (एम डी दानिश)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
+            { id: 123, name: "MD Danish (एम D दानिश)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
             { id: 124, name: "MD Aslam (एम डी असलम)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
             { id: 125, name: "MD Irfan (एम डी इरफान)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
             { id: 126, name: "MD Imran (एम डी इमरान)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
@@ -202,7 +289,7 @@
             { id: 132, name: "MD Wasim (एम डी वसीम)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" }
         ];
 
-        let members = JSON.parse(localStorage.getItem('nooriVillageApp_v7')) || defaultMembers;
+        let members = JSON.parse(localStorage.getItem('nooriVillageApp_v8')) || defaultMembers;
 
         updateAdminUI();
 
@@ -211,55 +298,92 @@
             document.getElementById('viewSearch').classList.add('hidden');
             document.getElementById('viewAdmin').classList.add('hidden');
 
-            document.getElementById('tabList').className = "font-bold text-sm text-slate-500 px-4 py-1.5 rounded-full transition";
-            document.getElementById('tabSearch').className = "font-bold text-sm text-slate-500 px-4 py-1.5 rounded-full transition";
-            document.getElementById('tabAdmin').className = "font-bold text-sm text-slate-500 px-4 py-1.5 rounded-full transition";
+            document.getElementById('tabList').className = "font-bold text-xs text-slate-500 px-5 py-2 rounded-xl transition flex items-center gap-2";
+            document.getElementById('tabSearch').className = "font-bold text-xs text-slate-500 px-5 py-2 rounded-xl transition flex items-center gap-2";
+            document.getElementById('tabAdmin').className = "font-bold text-xs text-slate-500 px-5 py-2 rounded-xl transition flex items-center gap-2";
 
             if(tab === 'list') {
                 document.getElementById('viewList').classList.remove('hidden');
-                document.getElementById('tabList').className = "font-bold text-sm text-emerald-700 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 transition";
+                document.getElementById('tabList').className = "font-bold text-xs text-emerald-700 px-5 py-2 rounded-xl bg-emerald-50 border border-emerald-200 transition shadow-sm flex items-center gap-2";
                 renderFullList();
             } else if(tab === 'search') {
                 document.getElementById('viewSearch').classList.remove('hidden');
-                document.getElementById('tabSearch').className = "font-bold text-sm text-emerald-700 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 transition";
+                document.getElementById('tabSearch').className = "font-bold text-xs text-emerald-700 px-5 py-2 rounded-xl bg-emerald-50 border border-emerald-200 transition shadow-sm flex items-center gap-2";
             } else if(tab === 'admin') {
                 document.getElementById('viewAdmin').classList.remove('hidden');
-                document.getElementById('tabAdmin').className = "font-bold text-sm text-emerald-700 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 transition";
+                document.getElementById('tabAdmin').className = "font-bold text-xs text-emerald-700 px-5 py-2 rounded-xl bg-emerald-50 border border-emerald-200 transition shadow-sm flex items-center gap-2";
+                if(isAdmin) populateAdminEditDropdown();
             }
         }
 
         function updateAdminUI() {
             if(isAdmin) {
-                document.getElementById('adminLockIcon').className = "fa-solid fa-lock-open text-emerald-600";
-                document.getElementById('adminStatusText').innerText = "एडमिन मोड चालू है";
-                document.getElementById('adminLoginBtn').innerText = "लॉग आउट करें";
-                document.getElementById('addMemberCard').classList.remove('hidden');
+                document.getElementById('adminLoginCard').classList.add('hidden');
+                document.getElementById('adminPanelContent').classList.remove('hidden');
+                populateAdminEditDropdown();
             } else {
-                document.getElementById('adminLockIcon').className = "fa-solid fa-lock text-slate-700";
-                document.getElementById('adminStatusText').innerText = "एडमिन मोड बंद है";
-                document.getElementById('adminLoginBtn').innerText = "एडमिन लॉगिन करें";
-                document.getElementById('addMemberCard').classList.add('hidden');
+                document.getElementById('adminLoginCard').classList.remove('hidden');
+                document.getElementById('adminPanelContent').classList.add('hidden');
             }
         }
 
         function verifyAdmin() {
-            if(isAdmin) {
-                if(confirm("क्या आप एडमिन से लॉग आउट करना चाहते हैं?")) {
-                    isAdmin = false;
-                    localStorage.setItem('nooriAdminLoggedIn', 'false');
-                    updateAdminUI();
-                }
-                return;
-            }
-            let pass = prompt("एडमिन पासवर्ड दर्ज करें:");
+            let pass = document.getElementById('adminPasswordInput').value;
             if(pass === "1234") {
                 isAdmin = true;
-                localStorage.setItem('nooriAdminLoggedIn', 'true');
+                localStorage.setItem('nooriAdminLoggedIn_v8', 'true');
+                document.getElementById('adminPasswordInput').value = "";
                 updateAdminUI();
-                alert("सफलतापूर्वक लॉगिन हो गए!");
-                switchTab('list');
             } else {
-                alert("गलत पासवर्ड!");
+                alert("गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।");
+            }
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            localStorage.setItem('nooriAdminLoggedIn_v8', 'false');
+            updateAdminUI();
+        }
+
+        function populateAdminEditDropdown() {
+            let select = document.getElementById('editMemberSelect');
+            select.innerHTML = members.map(m => `<option value="${m.id}">#${m.id} - ${m.name}</option>`).join('');
+            loadMemberDataForEdit();
+        }
+
+        function loadMemberDataForEdit() {
+            let memberId = document.getElementById('editMemberSelect').value;
+            let m = members.find(x => x.id == memberId);
+            if(!m) return;
+            let monthIdx = document.getElementById('editMonthSelect').value;
+            let moData = m.months[monthIdx];
+            
+            document.getElementById('editPaidStatus').value = moData.paid ? "true" : "false";
+            document.getElementById('editAmountInput').value = moData.amount || 500;
+            document.getElementById('editDateInput').value = moData.date || (new Date().toLocaleDateString('hi-IN') + ", " + new Date().toLocaleTimeString('hi-IN', {hour: '2-digit', minute:'2-digit'}));
+        }
+
+        document.getElementById('editMonthSelect').addEventListener('change', loadMemberDataForEdit);
+
+        function saveAdminDirectEdit() {
+            let memberId = document.getElementById('editMemberSelect').value;
+            let monthIdx = document.getElementById('editMonthSelect').value;
+            let isPaid = document.getElementById('editPaidStatus').value === "true";
+            let amount = document.getElementById('editAmountInput').value;
+            let dateStr = document.getElementById('editDateInput').value;
+
+            let m = members.find(x => x.id == memberId);
+            if(m) {
+                m.months[monthIdx] = {
+                    paid: isPaid,
+                    amount: isPaid ? amount : 0,
+                    date: isPaid ? dateStr : ""
+                };
+                m.lastUpdated = dateStr || (new Date().toLocaleDateString('hi-IN') + ", " + new Date().toLocaleTimeString('hi-IN', {hour: '2-digit', minute:'2-digit'}));
+                
+                localStorage.setItem('nooriVillageApp_v8', JSON.stringify(members));
+                alert("हिसाब सफलतापूर्वक अपडेट कर दिया गया है!");
+                renderFullList();
             }
         }
 
@@ -268,12 +392,11 @@
             let id = parseInt(document.getElementById('newMemberId').value);
 
             if(!name || !id) {
-                alert("कृपया सदस्य का नाम और सही आईडी नंबर दोनों भरें!");
+                alert("कृपया सदस्य का नाम और आईडी दोनों दर्ज करें!");
                 return;
             }
-
             if(members.some(m => m.id === id)) {
-                alert("यह आईडी नंबर पहले से मौजूद है! दूसरी आईडी डालें।");
+                alert("यह आईडी नंबर पहले से मौजूद है!");
                 return;
             }
 
@@ -284,34 +407,41 @@
                 lastUpdated: "नया सदस्य"
             });
 
-            localStorage.setItem('nooriVillageApp_v7', JSON.stringify(members));
+            localStorage.setItem('nooriVillageApp_v8', JSON.stringify(members));
             document.getElementById('newMemberName').value = "";
             document.getElementById('newMemberId').value = "";
             alert("नया सदस्य सफलतापूर्वक जोड़ दिया गया है!");
-            switchTab('list');
+            populateAdminEditDropdown();
+            renderFullList();
         }
 
         function renderFullList() {
+            let totalOverall = 0;
             let container = document.getElementById('fullMemberList');
+            
             container.innerHTML = members.map(m => {
                 let totalPaidAmt = m.months.reduce((sum, mo) => sum + (mo.paid ? Number(mo.amount || 0) : 0), 0);
+                totalOverall += totalPaidAmt;
                 let paidCount = m.months.filter(mo => mo.paid).length;
+                
                 return `
-                    <div onclick="openLedger(${m.id})" class="bg-white p-3.5 rounded-2xl border border-slate-200 flex justify-between items-center cursor-pointer shadow-sm">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs">#${m.id}</div>
+                    <div onclick="openLedger(${m.id})" class="bg-white p-4 rounded-2xl border border-slate-200/80 flex justify-between items-center cursor-pointer shadow-sm hover:border-emerald-300 transition">
+                        <div class="flex items-center space-x-3.5">
+                            <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs shadow-inner">#${m.id}</div>
                             <div>
-                                <h4 class="font-bold text-sm text-slate-800">${m.name}</h4>
-                                <p class="text-[11px] text-slate-400">अपडेट: ${m.lastUpdated || 'नया'}</p>
+                                <h4 class="font-bold text-sm text-slate-900">${m.name}</h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5">अपडेट: ${m.lastUpdated || 'नया'}</p>
                             </div>
                         </div>
                         <div class="text-right">
-                            <span class="text-sm font-bold text-emerald-600 block">₹${totalPaidAmt}</span>
-                            <span class="text-[10px] text-slate-500 font-medium">महीने जमा: ${paidCount}/12</span>
+                            <span class="text-sm font-extrabold text-emerald-600 block">₹${totalPaidAmt}</span>
+                            <span class="text-[10px] text-slate-500 font-medium">महीने: ${paidCount}/12</span>
                         </div>
                     </div>
                 `;
             }).join('');
+
+            document.getElementById('totalCollectionAmt').innerText = "₹" + totalOverall;
         }
 
         function handleSearch() {
@@ -323,13 +453,13 @@
                 let totalPaidAmt = m.months.reduce((sum, mo) => sum + (mo.paid ? Number(mo.amount || 0) : 0), 0);
                 let paidCount = m.months.filter(mo => mo.paid).length;
                 return `
-                    <div onclick="openLedger(${m.id})" class="bg-white p-3.5 rounded-2xl border border-slate-200 flex justify-between items-center cursor-pointer shadow-sm">
+                    <div onclick="openLedger(${m.id})" class="bg-white p-4 rounded-2xl border border-slate-200/80 flex justify-between items-center cursor-pointer shadow-sm hover:border-emerald-300 transition">
                         <div>
                             <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-600">ID: ${m.id}</span>
-                            <h4 class="font-bold text-sm text-slate-800 mt-1">${m.name}</h4>
+                            <h4 class="font-bold text-sm text-slate-900 mt-1">${m.name}</h4>
                         </div>
                         <div class="text-right">
-                            <span class="text-sm font-bold text-emerald-600">₹${totalPaidAmt}</span>
+                            <span class="text-sm font-extrabold text-emerald-600">₹${totalPaidAmt}</span>
                             <span class="text-[10px] text-slate-500 block">महीने: ${paidCount}/12</span>
                         </div>
                     </div>
@@ -363,8 +493,8 @@
             document.getElementById('receiptDate').innerText = m.lastUpdated || "-";
 
             let statusEl = document.getElementById('modalStatusText');
-            statusEl.innerText = `भुगतान: ${paidCount}/12 महीने`;
-            statusEl.className = "text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 inline-block mt-1";
+            statusEl.innerText = `${paidCount}/12 महीने जमा`;
+            statusEl.className = "text-xs font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 inline-block mt-1";
 
             if(paidCount < 12) {
                 document.getElementById('paymentSection').classList.remove('hidden');
@@ -376,41 +506,12 @@
             grid.innerHTML = monthNames.map((mon, idx) => {
                 let moData = m.months[idx];
                 return `
-                    <button type="button" onclick="editMonth(${idx})" class="p-2.5 text-xs rounded-xl border font-semibold transition text-left ${moData.paid ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 text-slate-700 border-slate-200'}">
+                    <div class="p-2.5 text-xs rounded-2xl border font-semibold text-left ${moData.paid ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm' : 'bg-slate-50 text-slate-600 border-slate-200'}">
                         <div class="font-bold">${mon}</div>
-                        <div class="text-[10px] mt-0.5">${moData.paid ? `✓ ₹${moData.amount}<br>${moData.date}` : '✗ बकाया'}</div>
-                    </button>
+                        <div class="text-[10px] mt-1 opacity-90">${moData.paid ? `✓ ₹${moData.amount}<br><span class="text-[8px]">${moData.date}</span>` : '✗ बकाया'}</div>
+                    </div>
                 `;
             }).join('');
-        }
-
-        function editMonth(idx) {
-            if(!isAdmin) {
-                alert("सुरक्षा चेतावनी: आप एडमिन नहीं हैं! पहले 'एडमिन' टैब में जाकर पासवर्ड (1234) डालें।");
-                return;
-            }
-            let m = members.find(x => x.id === currentMemberId);
-            let cur = m.months[idx];
-
-            let action = confirm(`महीना: ${monthNames[idx]}\nस्थिति बदलें?\n[OK] - जमा (Paid) करें\n[Cancel] - बकाया (Unpaid) करें`);
-            
-            if(action) {
-                let amt = prompt("कितना पैसा दिया गया है? (रुपये लिखें जैसे 500):", cur.amount || "500");
-                if(amt === null) return;
-                let dateInput = prompt("तारीख और समय दर्ज करें:", new Date().toLocaleDateString('hi-IN') + ", " + new Date().toLocaleTimeString('hi-IN', {hour: '2-digit', minute:'2-digit'}));
-                if(dateInput === null) return;
-
-                m.months[idx] = { paid: true, amount: amt, date: dateInput };
-                m.lastUpdated = dateInput;
-            } else {
-                m.months[idx] = { paid: false, amount: 0, date: "" };
-                let now = new Date();
-                m.lastUpdated = now.toLocaleDateString('hi-IN') + ", " + now.toLocaleTimeString('hi-IN', {hour: '2-digit', minute:'2-digit'});
-            }
-
-            localStorage.setItem('nooriVillageApp_v7', JSON.stringify(members));
-            renderLedgerGrid();
-            renderFullList();
         }
 
         function downloadReceiptPDF() {
