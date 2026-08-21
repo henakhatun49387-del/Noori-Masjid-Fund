@@ -3,110 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>नूरी मस्जिद - डिजिटल खाता</title>
+    <title>नूरी मस्जिद - डिजिटल हिसाब पोर्टल</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .bank-gradient { background: linear-gradient(135deg, #064e3b 0%, #022c22 100%); }
-        .smooth-card { transition: all 0.2s ease; }
-        .smooth-card:active { transform: scale(0.98); }
+        #splash { position: fixed; inset: 0; background: #064e3b; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.5s ease; color: white; }
     </style>
 </head>
-<body class="bg-slate-100 pb-20 text-slate-800">
+<body class="bg-slate-100 pb-20">
 
-    <!-- टॉप हेडर (बैंक स्टाइल) -->
-    <header class="bank-gradient text-white p-5 rounded-b-3xl shadow-xl sticky top-0 z-40">
-        <div class="flex justify-between items-center mb-4">
-            <div>
-                <p class="text-xs text-emerald-300 font-medium">नूरी मस्जिद फंड पोर्टल</p>
-                <h1 class="text-xl font-bold"><i class="fa-solid fa-mosque mr-2 text-amber-300"></i>डिजिटल खाता</h1>
-            </div>
-            <button onclick="toggleAdminMode()" id="adminBtn" class="bg-emerald-700/60 border border-emerald-500 text-xs px-3 py-1.5 rounded-full font-semibold">
-                🔒 एडमिन लॉक
-            </button>
+    <!-- Splash Screen (वीडियो जैसा) -->
+    <div id="splash">
+        <div class="w-20 h-20 bg-emerald-700/50 rounded-full flex items-center justify-center mb-4 border border-emerald-500 shadow-lg">
+            <i class="fa-solid fa-moon text-4xl text-amber-300 animate-bounce"></i>
         </div>
+        <h1 class="text-2xl font-bold tracking-wide">नूरी मस्जिद</h1>
+        <p class="text-xs text-emerald-200 mt-1 font-medium">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+        <p class="text-[11px] text-emerald-300/80 mt-4">लोड हो रहा है...</p>
+    </div>
 
-        <!-- टोटल बैलेंस कार्ड -->
-        <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10 flex justify-between items-center">
-            <div>
-                <p class="text-xs text-slate-300">कुल जमा फंड (Total)</p>
-                <h2 id="totalCollection" class="text-2xl font-bold text-amber-300">₹0</h2>
-            </div>
-            <div class="text-right">
-                <p class="text-xs text-slate-300">कुल सदस्य</p>
-                <h2 class="text-xl font-bold">32</h2>
-            </div>
-        </div>
+    <!-- Header -->
+    <header class="bg-emerald-800 text-white p-5 sticky top-0 z-40 shadow-md text-center">
+        <h2 class="font-bold text-lg"><i class="fa-solid fa-mosque mr-2 text-amber-300"></i>नूरी मस्जिद</h2>
+        <p class="text-xs text-emerald-200 mt-0.5">गाँव वाले लाइव डिजिटल हिसाब पोर्टल</p>
     </header>
 
-    <!-- नेविगेशन टैब्स (PhonePe / GPay स्टाइल) -->
-    <nav class="flex bg-white shadow-sm px-4 py-2 border-b justify-around sticky top-[136px] z-30">
-        <button onclick="switchTab('home')" id="tabHome" class="flex flex-col items-center text-xs font-bold text-emerald-700 pb-1 border-b-2 border-emerald-600">
-            <i class="fa-solid fa-house text-lg mb-1"></i>होम
-        </button>
-        <button onclick="switchTab('search')" id="tabSearch" class="flex flex-col items-center text-xs font-bold text-slate-400 pb-1">
-            <i class="fa-solid fa-magnifying-glass text-lg mb-1"></i>सर्च करें
-        </button>
-        <button onclick="switchTab('list')" id="tabList" class="flex flex-col items-center text-xs font-bold text-slate-400 pb-1">
-            <i class="fa-solid fa-list-ul text-lg mb-1"></i>पूरी सूची
-        </button>
+    <!-- Navigation Tabs (खोजें, गाँव लिस्ट, एडमिन) -->
+    <nav class="flex bg-white shadow-sm px-4 py-2.5 border-b justify-around sticky top-[76px] z-30">
+        <button onclick="switchTab('search')" id="tabSearch" class="font-bold text-sm text-emerald-700 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 transition">खोजें</button>
+        <button onclick="switchTab('list')" id="tabList" class="font-bold text-sm text-slate-500 px-4 py-1.5 rounded-full transition">गाँव लिस्ट</button>
+        <button onclick="switchTab('admin')" id="tabAdmin" class="font-bold text-sm text-slate-500 px-4 py-1.5 rounded-full transition">एडमिन</button>
     </nav>
 
-    <!-- मुख्य कंटेंट्स -->
+    <!-- Main Content Area -->
     <main class="p-4 max-w-md mx-auto">
 
-        <!-- होम टैब -->
-        <div id="viewHome" class="space-y-4">
+        <!-- 1. खोजें टैब -->
+        <div id="viewSearch" class="space-y-4">
             <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
-                <h3 class="font-bold text-sm text-slate-700 mb-2">⚡ त्वरित विकल्प</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="switchTab('search')" class="bg-emerald-50 hover:bg-emerald-100 p-3 rounded-xl text-left border border-emerald-200">
-                        <i class="fa-solid fa-search text-emerald-600 mb-1 text-base block"></i>
-                        <span class="font-bold text-xs text-emerald-900">नाम खोजें</span>
-                    </button>
-                    <button onclick="switchTab('list')" class="bg-amber-50 hover:bg-amber-100 p-3 rounded-xl text-left border border-amber-200">
-                        <i class="fa-solid fa-users text-amber-600 mb-1 text-base block"></i>
-                        <span class="font-bold text-xs text-amber-900">सभी 32 मेंबर</span>
-                    </button>
+                <label class="text-xs font-bold text-slate-600 block mb-2">नाम या ID लिखें (हिंदी / English)</label>
+                <div class="relative">
+                    <input type="text" id="searchInput" placeholder="जैसे: Salim या सलीम / 101..." oninput="handleSearch()" class="w-full bg-slate-50 border border-slate-300 text-sm px-4 py-3 rounded-xl outline-none focus:border-emerald-600">
                 </div>
-            </div>
-
-            <!-- हालिया गतिविधियाँ / निर्देश -->
-            <div class="bg-emerald-900 text-emerald-100 p-4 rounded-2xl text-xs space-y-2 shadow">
-                <p class="font-bold text-amber-300 text-sm"><i class="fa-solid fa-circle-info mr-1"></i> निर्देश:</p>
-                <p>• किसी भी मेंबर का हिसाब देखने के लिए 'पूरी सूची' या 'सर्च' पर जाएं।</p>
-                <p>• महीने का पेमेंट जोड़ने या बदलने के लिए ऊपर दिए गए <b>'एडमिन लॉक'</b> पर क्लिक करके पासवर्ड (1234) डालें।</p>
-            </div>
-        </div>
-
-        <!-- सर्च टैब -->
-        <div id="viewSearch" class="hidden space-y-3">
-            <div class="relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400"></i>
-                <input type="text" id="searchInput" placeholder="नाम या आईडी दर्ज करें (जैसे: Salim)..." oninput="handleSearch()" class="w-full bg-white pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-sm outline-none shadow-sm focus:border-emerald-600">
             </div>
             <div id="searchResults" class="space-y-2"></div>
         </div>
 
-        <!-- पूरी सूची टैब -->
+        <!-- 2. गाँव लिस्ट टैब -->
         <div id="viewList" class="hidden space-y-2">
             <div id="fullMemberList" class="space-y-2"></div>
         </div>
 
+        <!-- 3. एडमिन टैब -->
+        <div id="viewAdmin" class="hidden space-y-4">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 text-center space-y-3">
+                <div class="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center mx-auto text-lg font-bold">
+                    <i class="fa-solid fa-lock" id="adminLockIcon"></i>
+                </div>
+                <h3 id="adminStatusText" class="font-bold text-sm text-slate-800">एडमिन लॉक बंद है</h3>
+                <p class="text-xs text-slate-500">हिसाब में बदलाव या नया नाम जोड़ने के लिए एडमिन पासवर्ड डालें।</p>
+                <button onclick="verifyAdmin()" class="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold text-xs shadow">
+                    एडमिन लॉगिन करें (पासवर्ड: 1234)
+                </button>
+            </div>
+        </div>
+
     </main>
 
-    <!-- मेंबर डिटेल और पेमेंट खाता विंडो (Khatabook Style) -->
+    <!-- Modal for Member Details & Monthly Payment -->
     <div id="ledgerModal" class="hidden fixed inset-0 bg-black/70 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="bg-white rounded-t-3xl sm:rounded-3xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
                 <div>
                     <h3 id="modalName" class="font-bold text-base text-slate-900"></h3>
-                    <p class="text-xs text-slate-500">आईडी: <span id="modalId"></span> | फोन: <span id="modalPhone"></span></p>
+                    <p class="text-xs text-slate-500">आईडी: <span id="modalId"></span></p>
                 </div>
                 <button onclick="closeLedger()" class="bg-slate-100 p-2 rounded-full text-slate-600"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <!-- अकाउंट समरी बॉक्स -->
             <div class="bg-slate-50 p-4 rounded-2xl border mb-4 flex justify-between items-center">
                 <div>
                     <p class="text-xs text-slate-500">कुल जमा राशि</p>
@@ -118,112 +92,93 @@
                 </div>
             </div>
 
-            <p class="text-xs font-bold text-slate-600 mb-2">12 महीने का खाता (₹500 प्रति माह):</p>
+            <p class="text-xs font-bold text-slate-600 mb-2">12 महीने का हिसाब (₹500 प्रति माह):</p>
             <div id="ledgerGrid" class="grid grid-cols-3 gap-2 mb-4"></div>
 
-            <div id="adminEditBox" class="hidden space-y-3 border-t pt-4 bg-emerald-50/50 p-3 rounded-2xl">
-                <p class="text-xs font-bold text-emerald-800"><i class="fa-solid fa-shield-halved mr-1"></i> एडमिन संपादन पैनल:</p>
-                <input type="text" id="editPhoneInput" placeholder="मोबाइल नंबर अपडेट करें" class="w-full bg-white border p-2 rounded-xl text-xs">
-                <button onclick="saveAdminChanges()" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl font-bold text-xs shadow">डेटा सेव करें</button>
+            <div id="adminEditBox" class="hidden space-y-2 border-t pt-3">
+                <p class="text-[11px] font-bold text-emerald-700">एडमिन मोड चालू: महीने पर क्लिक करके टिक/अनटिक करें।</p>
             </div>
             
-            <button onclick="closeLedger()" class="w-full mt-3 bg-slate-200 text-slate-700 py-2.5 rounded-xl font-bold text-xs">बंद करें</button>
+            <button onclick="closeLedger()" class="w-full mt-2 bg-slate-200 text-slate-700 py-2.5 rounded-xl font-bold text-xs">बंद करें</button>
         </div>
     </div>
 
-    <!-- ऑडियो क्लिक इफ़ेक्ट -->
-    <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
-
     <script>
+        // Splash Screen हटेड
+        setTimeout(() => {
+            let splash = document.getElementById('splash');
+            splash.style.opacity = '0';
+            setTimeout(() => splash.style.display = 'none', 500);
+        }, 1500);
+
         const monthNames = ["जनवरी", "फरवरी", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"];
         let isAdmin = false;
 
         const defaultMembers = [
-            { id: 101, name: "MD Salim (एम डी सलीम)", phone: "9876543210", paid: Array(12).fill(false) },
-            { id: 102, name: "MD Haleem (एम डी हलीम)", phone: "9876543211", paid: Array(12).fill(false) },
-            { id: 103, name: "MD Mustaqim (एम डी मुर्तकीम)", phone: "9876543212", paid: Array(12).fill(false) },
-            { id: 104, name: "MD Akbar (एम डी अकबर)", phone: "9876543213", paid: Array(12).fill(false) },
-            { id: 105, name: "MD Hakim (एम डी हकीम)", phone: "9876543214", paid: Array(12).fill(false) },
-            { id: 106, name: "Md Kalam (एम डी कलाम)", phone: "9876543215", paid: Array(12).fill(false) },
-            { id: 107, name: "MD Idris (एम डी इद्रीस)", phone: "9876543216", paid: Array(12).fill(false) },
-            { id: 108, name: "MD Salam (एम डी सलाम)", phone: "9876543217", paid: Array(12).fill(false) },
-            { id: 109, name: "MD Javed (एम डी जावेद)", phone: "9876543218", paid: Array(12).fill(false) },
-            { id: 110, name: "Md Hanif (एम डी हनीफ)", phone: "9876543219", paid: Array(12).fill(false) },
-            { id: 111, name: "MD Rashid (एम डी रशीद)", phone: "9876543220", paid: Array(12).fill(false) },
-            { id: 112, name: "MD Gafoor (एम डी गफ्फार)", phone: "9876543221", paid: Array(12).fill(false) },
-            { id: 113, name: "MD Anwar (एम डी अनवर)", phone: "9876543222", paid: Array(12).fill(false) },
-            { id: 114, name: "MD Shamim (एम डी शमीम)", phone: "9876543223", paid: Array(12).fill(false) },
-            { id: 115, name: "MD Zahir (एम डी जाहिर)", phone: "9876543224", paid: Array(12).fill(false) },
-            { id: 116, name: "MD Farooq (एम डी फारूक)", phone: "9876543225", paid: Array(12).fill(false) },
-            { id: 117, name: "MD Nazir (एम डी नजीर)", phone: "9876543226", paid: Array(12).fill(false) },
-            { id: 118, name: "MD Qasim (एम डी कासिम)", phone: "9876543227", paid: Array(12).fill(false) },
-            { id: 119, name: "MD Habib (एम डी हबीब)", phone: "9876543228", paid: Array(12).fill(false) },
-            { id: 120, name: "MD Latif (एम डी लतीफ)", phone: "9876543229", paid: Array(12).fill(false) },
-            { id: 121, name: "MD Sohail (एम डी सोहेल)", phone: "9876543230", paid: Array(12).fill(false) },
-            { id: 122, name: "MD Arman (एम डी अरमान)", phone: "9876543231", paid: Array(12).fill(false) },
-            { id: 123, name: "MD Danish (एम डी दानिश)", phone: "9876543232", paid: Array(12).fill(false) },
-            { id: 124, name: "MD Aslam (एम डी असलम)", phone: "9876543233", paid: Array(12).fill(false) },
-            { id: 125, name: "MD Irfan (एम डी इरफान)", phone: "9876543234", paid: Array(12).fill(false) },
-            { id: 126, name: "MD Imran (एम डी इमरान)", phone: "9876543235", paid: Array(12).fill(false) },
-            { id: 127, name: "MD Shahbaz (एम डी शाहबाज)", phone: "9876543236", paid: Array(12).fill(false) },
-            { id: 128, name: "MD Altaf (एम डी अल्ताफ)", phone: "9876543237", paid: Array(12).fill(false) },
-            { id: 129, name: "MD Shahnawaz (एम डी शाहनवाज)", phone: "9876543238", paid: Array(12).fill(false) },
-            { id: 130, name: "MD Faiyaz (एम डी फैयाज)", phone: "9876543239", paid: Array(12).fill(false) },
-            { id: 131, name: "MD Tanveer (एम डी तनवीर)", phone: "9876543240", paid: Array(12).fill(false) },
-            { id: 132, name: "MD Wasim (एम डी वसीम)", phone: "9876543241", paid: Array(12).fill(false) }
+            { id: 101, name: "MD Salim (एम डी सलीम)", paid: Array(12).fill(false) },
+            { id: 102, name: "MD Haleem (एम डी हलीम)", paid: Array(12).fill(false) },
+            { id: 103, name: "MD Mustaqim (एम डी मुर्तकीम)", paid: Array(12).fill(false) },
+            { id: 104, name: "MD Akbar (एम डी अकबर)", paid: Array(12).fill(false) },
+            { id: 105, name: "MD Hakim (एम डी हकीम)", paid: Array(12).fill(false) },
+            { id: 106, name: "Md Kalam (एम डी कलाम)", paid: Array(12).fill(false) },
+            { id: 107, name: "MD Idris (एम डी इद्रीस)", paid: Array(12).fill(false) },
+            { id: 108, name: "MD Salam (एम डी सलाम)", paid: Array(12).fill(false) },
+            { id: 109, name: "MD Javed (एम डी जावेद)", paid: Array(12).fill(false) },
+            { id: 110, name: "Md Hanif (एम डी हनीफ)", paid: Array(12).fill(false) },
+            { id: 111, name: "MD Rashid (एम डी रशीद)", paid: Array(12).fill(false) },
+            { id: 112, name: "MD Gafoor (एम डी गफ्फार)", paid: Array(12).fill(false) },
+            { id: 113, name: "MD Anwar (एम डी अनवर)", paid: Array(12).fill(false) },
+            { id: 114, name: "MD Shamim (एम डी शमीम)", paid: Array(12).fill(false) },
+            { id: 115, name: "MD Zahir (एम डी जाहिर)", paid: Array(12).fill(false) },
+            { id: 116, name: "MD Farooq (एम डी फारूक)", paid: Array(12).fill(false) },
+            { id: 117, name: "MD Nazir (एम डी नजीर)", paid: Array(12).fill(false) },
+            { id: 118, name: "MD Qasim (एम डी कासिम)", paid: Array(12).fill(false) },
+            { id: 119, name: "MD Habib (एम डी हबीब)", paid: Array(12).fill(false) },
+            { id: 120, name: "MD Latif (एम डी लतीफ)", paid: Array(12).fill(false) },
+            { id: 121, name: "MD Sohail (एम डी सोहेल)", paid: Array(12).fill(false) },
+            { id: 122, name: "MD Arman (एम डी अरमान)", paid: Array(12).fill(false) },
+            { id: 123, name: "MD Danish (एम डी दानिश)", paid: Array(12).fill(false) },
+            { id: 124, name: "MD Aslam (एम डी असलम)", paid: Array(12).fill(false) },
+            { id: 125, name: "MD Irfan (एम डी इरफान)", paid: Array(12).fill(false) },
+            { id: 126, name: "MD Imran (एम डी इमरान)", paid: Array(12).fill(false) },
+            { id: 127, name: "MD Shahbaz (एम डी शाहबाज)", paid: Array(12).fill(false) },
+            { id: 128, name: "MD Altaf (एम डी अल्ताफ)", paid: Array(12).fill(false) },
+            { id: 129, name: "MD Shahnawaz (एम डी शाहनवाज)", paid: Array(12).fill(false) },
+            { id: 130, name: "MD Faiyaz (एम डी फैयाज)", paid: Array(12).fill(false) },
+            { id: 131, name: "MD Tanveer (एम डी तनवीर)", paid: Array(12).fill(false) },
+            { id: 132, name: "MD Wasim (एम डी वसीम)", paid: Array(12).fill(false) }
         ];
 
-        let members = JSON.parse(localStorage.getItem('nooriLedger_v1')) || defaultMembers;
+        let members = JSON.parse(localStorage.getItem('nooriVillageApp_v2')) || defaultMembers;
 
-        function playSound() {
-            let s = document.getElementById('clickSound');
-            s.currentTime = 0;
-            s.play().catch(e => {});
-        }
-
-        // टैब स्विचिंग लॉजिक
         function switchTab(tab) {
-            playSound();
-            document.getElementById('viewHome').classList.add('hidden');
             document.getElementById('viewSearch').classList.add('hidden');
             document.getElementById('viewList').classList.add('hidden');
-            
-            document.getElementById('tabHome').className = "flex flex-col items-center text-xs font-bold text-slate-400 pb-1";
-            document.getElementById('tabSearch').className = "flex flex-col items-center text-xs font-bold text-slate-400 pb-1";
-            document.getElementById('tabList').className = "flex flex-col items-center text-xs font-bold text-slate-400 pb-1";
+            document.getElementById('viewAdmin').classList.add('hidden');
 
-            if(tab === 'home') {
-                document.getElementById('viewHome').classList.remove('hidden');
-                document.getElementById('tabHome').className = "flex flex-col items-center text-xs font-bold text-emerald-700 pb-1 border-b-2 border-emerald-600";
-            } else if(tab === 'search') {
+            document.getElementById('tabSearch').className = "font-bold text-sm text-slate-500 px-4 py-1.5 rounded-full transition";
+            document.getElementById('tabList').className = "font-bold text-sm text-slate-500 px-4 py-1.5 rounded-full transition";
+            document.getElementById('tabAdmin').className = "font-bold text-sm text-slate-500 px-4 py-1.5 rounded-full transition";
+
+            if(tab === 'search') {
                 document.getElementById('viewSearch').classList.remove('hidden');
-                document.getElementById('tabSearch').className = "flex flex-col items-center text-xs font-bold text-emerald-700 pb-1 border-b-2 border-emerald-600";
-                handleSearch();
+                document.getElementById('tabSearch').className = "font-bold text-sm text-emerald-700 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 transition";
             } else if(tab === 'list') {
                 document.getElementById('viewList').classList.remove('hidden');
-                document.getElementById('tabList').className = "flex flex-col items-center text-xs font-bold text-emerald-700 pb-1 border-b-2 border-emerald-600";
+                document.getElementById('tabList').className = "font-bold text-sm text-emerald-700 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 transition";
                 renderFullList();
+            } else if(tab === 'admin') {
+                document.getElementById('viewAdmin').classList.remove('hidden');
+                document.getElementById('tabAdmin').className = "font-bold text-sm text-emerald-700 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 transition";
             }
-            updateTotalSum();
         }
 
-        function updateTotalSum() {
-            let total = 0;
-            members.forEach(m => {
-                let paidMonths = m.paid.filter(Boolean).length;
-                total += paidMonths * 500;
-            });
-            document.getElementById('totalCollection').innerText = "₹" + total.toLocaleString('en-IN');
-        }
-
-        // पूरी सूची रेंडर करें
         function renderFullList() {
             let container = document.getElementById('fullMemberList');
             container.innerHTML = members.map(m => {
                 let count = m.paid.filter(Boolean).length;
-                let amt = count * 500;
                 return `
-                    <div onclick="openLedger(${m.id})" class="smooth-card bg-white p-3.5 rounded-2xl border border-slate-200 flex justify-between items-center cursor-pointer shadow-sm">
+                    <div onclick="openLedger(${m.id})" class="bg-white p-3.5 rounded-2xl border border-slate-200 flex justify-between items-center cursor-pointer shadow-sm">
                         <div class="flex items-center space-x-3">
                             <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs">#${m.id}</div>
                             <div>
@@ -231,15 +186,12 @@
                                 <p class="text-[11px] text-slate-400">जमा: ${count}/12 महीने</p>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <span class="text-sm font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-xl">₹${amt}</span>
-                        </div>
+                        <span class="text-sm font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-xl">₹${count * 500}</span>
                     </div>
                 `;
             }).join('');
         }
 
-        // सर्च फंक्शन
         function handleSearch() {
             let q = document.getElementById('searchInput').value.toLowerCase();
             let res = members.filter(m => m.name.toLowerCase().includes(q) || m.id.toString().includes(q));
@@ -247,15 +199,14 @@
             
             container.innerHTML = res.map(m => {
                 let count = m.paid.filter(Boolean).length;
-                let amt = count * 500;
                 return `
-                    <div onclick="openLedger(${m.id})" class="smooth-card bg-white p-3.5 rounded-2xl border border-slate-200 flex justify-between items-center cursor-pointer shadow-sm">
+                    <div onclick="openLedger(${m.id})" class="bg-white p-3.5 rounded-2xl border border-slate-200 flex justify-between items-center cursor-pointer shadow-sm">
                         <div>
                             <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded font-bold text-slate-600">ID: ${m.id}</span>
                             <h4 class="font-bold text-sm text-slate-800 mt-1">${m.name}</h4>
                         </div>
                         <div class="text-right">
-                            <span class="text-sm font-bold text-emerald-600">₹${amt}</span>
+                            <span class="text-sm font-bold text-emerald-600">₹${count * 500}</span>
                             <p class="text-[10px] text-slate-400">${count}/12 माह</p>
                         </div>
                     </div>
@@ -265,17 +216,11 @@
 
         let currentMemberId = null;
 
-        // खाता/लेजर खोलें
         function openLedger(id) {
-            playSound();
             currentMemberId = id;
             let m = members.find(x => x.id === id);
-            
             document.getElementById('modalName').innerText = m.name;
             document.getElementById('modalId').innerText = m.id;
-            document.getElementById('modalPhone').innerText = m.phone || "उपलब्ध नहीं";
-            document.getElementById('editPhoneInput').value = m.phone || "";
-
             renderLedgerGrid();
             document.getElementById('ledgerModal').classList.remove('hidden');
         }
@@ -302,50 +247,29 @@
 
         function toggleMonth(idx) {
             if(!isAdmin) return;
-            playSound();
             let m = members.find(x => x.id === currentMemberId);
             m.paid[idx] = !m.paid[idx];
-            localStorage.setItem('nooriLedger_v1', JSON.stringify(members));
+            localStorage.setItem('nooriVillageApp_v2', JSON.stringify(members));
             renderLedgerGrid();
-            updateTotalSum();
         }
 
-        function saveAdminChanges() {
-            let m = members.find(x => x.id === currentMemberId);
-            m.phone = document.getElementById('editPhoneInput').value;
-            localStorage.setItem('nooriLedger_v1', JSON.stringify(members));
-            alert("सफलतापूर्वक अपडेट हो गया!");
-            closeLedger();
-            renderFullList();
+        function verifyAdmin() {
+            let pass = prompt("एडमिन पासवर्ड दर्ज करें:");
+            if(pass === "1234") {
+                isAdmin = true;
+                document.getElementById('adminLockIcon').className = "fa-solid fa-lock-open";
+                document.getElementById('adminStatusText').innerText = "एडमिन मोड चालू है (अब आप हिसाब बदल सकते हैं)";
+                alert("सफलतापूर्वक लॉगिन हो गए!");
+            } else {
+                alert("गलत पासवर्ड!");
+            }
         }
 
         function closeLedger() {
             document.getElementById('ledgerModal').classList.add('hidden');
-            renderFullList();
         }
 
-        // एडमिन लॉक सिस्टम (पासवर्ड: 1234)
-        function toggleAdminMode() {
-            playSound();
-            if(!isAdmin) {
-                let pass = prompt("एडमिन पासवर्ड दर्ज करें (डिफ़ॉल्ट: 1234):");
-                if(pass === "1234") {
-                    isAdmin = true;
-                    document.getElementById('adminBtn').innerHTML = "🔓 एडमिन मोड चालू";
-                    document.getElementById('adminBtn').className = "bg-amber-500 text-slate-900 text-xs px-3 py-1.5 rounded-full font-bold shadow";
-                    alert("एडमिन अधिकार मिल गए हैं! अब आप किसी भी मेंबर के महीने या फोन नंबर पर क्लिक करके बदल सकते हैं।");
-                } else if(pass !== null) {
-                    alert("गलत पासवर्ड!");
-                }
-            } else {
-                isAdmin = false;
-                document.getElementById('adminBtn').innerHTML = "🔒 एडमिन लॉक";
-                document.getElementById('adminBtn').className = "bg-emerald-700/60 border border-emerald-500 text-xs px-3 py-1.5 rounded-full font-semibold";
-                alert("एडमिन लॉक लगा दिया गया है। अब कोई दूसरा इसे बदल नहीं पाएगा।");
-            }
-        }
-
-        updateTotalSum();
+        handleSearch();
     </script>
 </body>
 </html>
