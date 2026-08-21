@@ -6,8 +6,8 @@
     <title>नूरी मस्जिद - डिजिटल हिसाब पोर्टल</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Poppins', sans-serif; }
     </style>
 </head>
@@ -15,13 +15,13 @@
 
     <!-- दुआ -->
     <div class="w-full bg-white py-2 shadow-sm border-b border-slate-200 text-center">
-        <span style="color: red; font-weight: bold; font-size: 15px; letter-spacing: 0.5px;">
+        <span style="color: red; font-weight: bold; font-size: 15px;">
             بسم الله الرحمن الرحيم
         </span>
     </div>
 
     <!-- हेडर -->
-    <header class="bg-emerald-800 text-white shadow-md sticky top-0 z-50">
+    <header class="bg-emerald-800 text-white shadow-md sticky top-0 z-40">
         <div class="max-w-4xl mx-auto px-4 py-3.5 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <div class="bg-white/10 p-2.5 rounded-xl">
@@ -32,20 +32,19 @@
                     <p class="text-xs text-emerald-200 font-medium">गाँव वाले लाइव डिजिटल हिसाब</p>
                 </div>
             </div>
-            <button onclick="alert('एडमिन पैनल सुरक्षित है')" class="bg-emerald-900 hover:bg-emerald-950 text-emerald-100 px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 shadow-sm transition">
-                <i class="fa-solid fa-lock text-xs text-emerald-300"></i>
-                <span>एडमिन</span>
+            <button onclick="openUpiModal()" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-1.5 rounded-lg text-xs font-medium border border-emerald-600 flex items-center space-x-1.5 shadow-sm">
+                <i class="fa-solid fa-qrcode text-xs text-emerald-300"></i>
+                <span>ऑनलाइन चंदा (UPI)</span>
             </button>
         </div>
     </header>
 
-    <!-- मुख्य कंटेंट -->
     <main class="max-w-4xl mx-auto px-4 mt-6">
-        <!-- स्टैट्स कार्ड्स -->
+        <!-- डैशबोर्ड कार्ड्स -->
         <div class="grid grid-cols-2 gap-4 mb-6">
             <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-3">
-                <div class="bg-emerald-100 p-3 rounded-xl text-emerald-700">
-                    <i class="fa-solid fa-users text-lg"></i>
+                <div class="bg-emerald-50 p-3 rounded-xl text-emerald-600">
+                    <i class="fa-solid fa-users text-xl"></i>
                 </div>
                 <div>
                     <p class="text-xs text-slate-500 font-medium">कुल सदस्य</p>
@@ -53,110 +52,264 @@
                 </div>
             </div>
             <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-3">
-                <div class="bg-blue-100 p-3 rounded-xl text-blue-700">
-                    <i class="fa-solid fa-wallet text-lg"></i>
+                <div class="bg-blue-50 p-3 rounded-xl text-blue-600">
+                    <i class="fa-solid fa-wallet text-xl"></i>
                 </div>
                 <div>
                     <p class="text-xs text-slate-500 font-medium">कुल जमा राशि</p>
-                    <h2 class="text-xl font-bold text-slate-800">₹16,000</h2>
+                    <h2 class="text-xl font-bold text-slate-800" id="totalFund">₹16,000</h2>
                 </div>
             </div>
         </div>
 
-        <!-- सर्च बॉक्स -->
-        <div class="mb-6">
-            <div class="relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </span>
-                <input type="text" id="search-input" onkeyup="filterTable()" placeholder="सदस्य का नाम खोजें (हिंदी या English)..." class="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 shadow-sm">
-            </div>
+        <!-- सर्च बार -->
+        <div class="relative mb-6">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+            <input type="text" id="searchInput" onkeyup="searchMember()" placeholder="सदस्य का नाम खोजें (हिंदी या English)..." class="w-full bg-white pl-11 pr-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-emerald-500 shadow-sm">
         </div>
 
-        <!-- सदस्यों की सूची टेबल -->
+        <!-- सदस्यों की सूची -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="p-4 border-b border-slate-100 flex justify-between items-center">
-                <h3 class="font-bold text-sm text-slate-700 flex items-center space-x-2">
-                    <i class="fa-solid fa-list text-emerald-600"></i>
+            <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="font-bold text-slate-800 text-sm flex items-center space-x-2">
+                    <i class="fa-solid fa-list-ul text-emerald-600"></i>
                     <span>गाँव के सदस्यों की सूची (32 लोग)</span>
                 </h3>
+                <span class="text-xs bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full font-medium">नाम पर क्लिक करें</span>
             </div>
+
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse" id="members-table">
+                <table class="w-full text-left border-collapse" id="memberTable">
                     <thead>
-                        <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
-                            <th class="p-3.5 font-semibold">आईडी (ID)</th>
-                            <th class="p-3.5 font-semibold">नाम (English)</th>
-                            <th class="p-3.5 font-semibold">हिंदी नाम</th>
-                            <th class="p-3.5 font-semibold text-right">स्थिति / राशि</th>
+                        <tr class="bg-slate-50 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-100">
+                            <th class="py-3 px-4 font-semibold">आईडी (ID)</th>
+                            <th class="py-3 px-4 font-semibold">नाम (ENGLISH)</th>
+                            <th class="py-3 px-4 font-semibold">हिंदी नाम</th>
+                            <th class="py-3 px-4 font-semibold text-right">स्थिति / राशि</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100 text-sm">
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">101</td><td class="p-3.5 font-medium text-slate-800">MD Salim</td><td class="p-3.5 text-slate-600">एम डी सलीम</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">102</td><td class="p-3.5 font-medium text-slate-800">MD Haleem</td><td class="p-3.5 text-slate-600">एम डी हलीम</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">103</td><td class="p-3.5 font-medium text-slate-800">MD mustaqim</td><td class="p-3.5 text-slate-600">एम डी मुस्तकीम</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">104</td><td class="p-3.5 font-medium text-slate-800">MD Akbar</td><td class="p-3.5 text-slate-600">एम डी अकबर</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">105</td><td class="p-3.5 font-medium text-slate-800">MD Hakim</td><td class="p-3.5 text-slate-600">एम डी हकीम</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">106</td><td class="p-3.5 font-medium text-slate-800">Md Kalam</td><td class="p-3.5 text-slate-600">एम डी कलाम</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">107</td><td class="p-3.5 font-medium text-slate-800">MD Idris</td><td class="p-3.5 text-slate-600">एम डी इदरीस</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">108</td><td class="p-3.5 font-medium text-slate-800">MD Salam</td><td class="p-3.5 text-slate-600">एम डी सलाम</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">109</td><td class="p-3.5 font-medium text-slate-800">MD Javed</td><td class="p-3.5 text-slate-600">एम डी जावेद</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">110</td><td class="p-3.5 font-medium text-slate-800">md hanif</td><td class="p-3.5 text-slate-600">एम डी हनीफ</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">111</td><td class="p-3.5 font-medium text-slate-800">MD Rashid</td><td class="p-3.5 text-slate-600">एम डी रशीद</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">112</td><td class="p-3.5 font-medium text-slate-800">MD Gafoor</td><td class="p-3.5 text-slate-600">एम डी गफ्फार</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">113</td><td class="p-3.5 font-medium text-slate-800">MD Murtuza</td><td class="p-3.5 text-slate-600">एम डी मुर्तजा</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">114</td><td class="p-3.5 font-medium text-slate-800">MD Shakur</td><td class="p-3.5 text-slate-600">एम डी शकूर</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">115</td><td class="p-3.5 font-medium text-slate-800">MD Suleman</td><td class="p-3.5 text-slate-600">एम डी सुलेमान</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">116</td><td class="p-3.5 font-medium text-slate-800">Em di</td><td class="p-3.5 text-slate-600">एम डी</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">117</td><td class="p-3.5 font-medium text-slate-800">md nadeem</td><td class="p-3.5 text-slate-600">एम डी नदीम</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">118</td><td class="p-3.5 font-medium text-slate-800">MD Shahid</td><td class="p-3.5 text-slate-600">एम डी शाहिद</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">119</td><td class="p-3.5 font-medium text-slate-800">MD Fida</td><td class="p-3.5 text-slate-600">एम डी फिदा</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">120</td><td class="p-3.5 font-medium text-slate-800">MD Zaheer</td><td class="p-3.5 text-slate-600">एम डी जहीर</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">121</td><td class="p-3.5 font-medium text-slate-800">MD Khaleel</td><td class="p-3.5 text-slate-600">एम डी खलील</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">122</td><td class="p-3.5 font-medium text-slate-800">MD Khalid</td><td class="p-3.5 text-slate-600">एम डी खालिद</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">123</td><td class="p-3.5 font-medium text-slate-800">Noorjahan Khatoon</td><td class="p-3.5 text-slate-600">नूरजहाँ खातून</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">124</td><td class="p-3.5 font-medium text-slate-800">MD Ilyas</td><td class="p-3.5 text-slate-600">एम डी इलियास</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">125</td><td class="p-3.5 font-medium text-slate-800">MD Shamshad</td><td class="p-3.5 text-slate-600">एम डी शमशाद</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">126</td><td class="p-3.5 font-medium text-slate-800">Soni Khatoon</td><td class="p-3.5 text-slate-600">सोनी खातून</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">127</td><td class="p-3.5 font-medium text-slate-800">Mohammed Tasleem</td><td class="p-3.5 text-slate-600">मोहम्मद तस्लीम</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">128</td><td class="p-3.5 font-medium text-slate-800">Muhammad AKTaj</td><td class="p-3.5 text-slate-600">मुहम्मद एके ताज</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">129</td><td class="p-3.5 font-medium text-slate-800">Mohammed Shaukat</td><td class="p-3.5 text-slate-600">मोहम्मद शौकत</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">130</td><td class="p-3.5 font-medium text-slate-800">Mohammed Kaushal</td><td class="p-3.5 text-slate-600">मोहम्मद कौशल</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">131</td><td class="p-3.5 font-medium text-slate-800">Muhammad irfan</td><td class="p-3.5 text-slate-600">मुहम्मद इरफान</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
-                        <tr><td class="p-3.5 text-slate-500 font-semibold">132</td><td class="p-3.5 font-medium text-slate-800">Muhammad israfi</td><td class="p-3.5 text-slate-600">मुहम्मद इस्राफील</td><td class="p-3.5 text-right font-bold text-emerald-600">₹500</td></tr>
+                    <tbody class="divide-y divide-slate-100 text-sm" id="tableBody">
+                        <!-- डेटा जनरेट होगा -->
                     </tbody>
                 </table>
             </div>
         </div>
     </main>
 
-    <!-- सर्च करने का फीचर -->
-    <script>
-        function filterTable() {
-            let input = document.getElementById('search-input').value.toLowerCase();
-            let table = document.getElementById('members-table');
-            let tr = table.getElementsByTagName('tr');
+    <!-- मेंबर डिटेल और हिस्ट्री मॉडल -->
+    <div id="detailModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6">
+            <div class="flex justify-between items-center border-b pb-4 mb-4">
+                <div>
+                    <h3 id="modalName" class="font-bold text-lg text-slate-800">नाम</h3>
+                    <p class="text-xs text-slate-500">आईडी: <span id="modalId"></span></p>
+                </div>
+                <button onclick="closeModal()" class="bg-slate-100 hover:bg-slate-200 p-2 rounded-full text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
 
-            for (let i = 1; i < tr.length; i++) {
-                let tdId = tr[i].getElementsByTagName('td')[0];
-                let tdName = tr[i].getElementsByTagName('td')[1];
-                let tdHindi = tr[i].getElementsByTagName('td')[2];
-                
-                if (tdId || tdName || tdHindi) {
-                    let idVal = tdId.textContent || tdId.innerText;
-                    let nameVal = tdName.textContent || tdName.innerText;
-                    let hindiVal = tdHindi.textContent || tdHindi.innerText;
-                    
-                    if (idVal.toLowerCase().indexOf(input) > -1 || 
-                        nameVal.toLowerCase().indexOf(input) > -1 || 
-                        hindiVal.toLowerCase().indexOf(input) > -1) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
-                    }
-                }
-            }
+            <div class="mb-4 bg-emerald-50 p-4 rounded-xl flex justify-between items-center border border-emerald-100">
+                <div>
+                    <p class="text-xs text-emerald-700 font-medium">कुल जमा (इस साल)</p>
+                    <h4 id="modalTotal" class="text-2xl font-bold text-emerald-800">₹500</h4>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs text-red-600 font-medium">बकाया राशि</p>
+                    <h4 id="modalDue" class="text-xl font-bold text-red-600">₹5,500</h4>
+                </div>
+            </div>
+
+            <h4 class="font-bold text-slate-700 text-sm mb-3"><i class="fa-regular fa-calendar-days text-emerald-600 mr-1.5"></i> साल 2026 का महीना-वार हिसाब (प्रत्येक माह ₹500):</h4>
+            
+            <div class="grid grid-cols-2 gap-2.5 mb-6" id="monthsGrid">
+                <!-- महीने यहाँ जनरेट होंगे -->
+            </div>
+
+            <div class="flex space-x-3">
+                <button onclick="sendWhatsAppReceipt()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-medium text-sm flex items-center justify-center space-x-2 shadow-sm">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>WhatsApp रसीद भेजें</span>
+                </button>
+                <button onclick="closeModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-5 py-3 rounded-xl font-medium text-sm">
+                    बंद करें
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPI / QR कोड पेमेंट पॉप-अप -->
+    <div id="upiModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full text-center p-6 shadow-2xl relative">
+            <button onclick="closeUpiModal()" class="absolute top-4 right-4 bg-slate-100 hover:bg-slate-200 p-2 rounded-full text-slate-600">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+            <div class="bg-emerald-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 text-emerald-600">
+                <i class="fa-solid fa-qrcode text-xl"></i>
+            </div>
+            <h3 class="font-bold text-lg text-slate-800 mb-1">ऑनलाइन चंदा दें</h3>
+            <p class="text-xs text-slate-500 mb-4">किसी भी UPI ऐप (GPay, PhonePe, Paytm) से स्कैन करके भेजें</p>
+            
+            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 mb-4 inline-block">
+                <div class="font-bold text-emerald-800 text-base mb-1">Kaif Jee</div>
+                <div class="bg-white p-2 rounded-xl border border-slate-200 mb-2">
+                    <p class="text-xs text-slate-400 font-mono select-all">UPI ID: <b>kaifjee2580@okaxis</b></p>
+                </div>
+                <a href="upi://pay?pa=kaifjee2580@okaxis&pn=Kaif%20Jee&cu=INR" class="block w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 px-4 rounded-xl font-medium text-xs shadow-sm">
+                    सीधे भुगतान ऐप खोलें (Pay Now)
+                </a>
+            </div>
+
+            <p class="text-[11px] text-slate-400">पैसे भेजने के बाद एडमिन को स्क्रीनशॉट जरूर भेजें।</p>
+        </div>
+    </div>
+
+    <script>
+        const members = [
+            { id: 101, en: "MD Salim", hi: "एम डी सलीम", paidMonths: 1, phone: "919876543210" },
+            { id: 102, en: "MD Haleem", hi: "एम डी हलीम", paidMonths: 1, phone: "919876543211" },
+            { id: 103, en: "MD mustaqim", hi: "एम डी मुर्तकीम", paidMonths: 1, phone: "919876543212" },
+            { id: 104, en: "MD Akbar", hi: "एम डी अकबर", paidMonths: 1, phone: "919876543213" },
+            { id: 105, en: "MD Hakim", hi: "एम डी हकीम", paidMonths: 1, phone: "919876543214" },
+            { id: 106, en: "Md Kalam", hi: "एम डी कलाम", paidMonths: 1, phone: "919876543215" },
+            { id: 107, en: "MD Idris", hi: "एम डी इद्रीस", paidMonths: 1, phone: "919876543216" },
+            { id: 108, en: "MD Salam", hi: "एम डी सलाम", paidMonths: 1, phone: "919876543217" },
+            { id: 109, en: "MD Javed", hi: "एम डी जावेद", paidMonths: 1, phone: "919876543218" },
+            { id: 110, en: "md hanif", hi: "एम डी हनीफ", paidMonths: 1, phone: "919876543219" },
+            { id: 111, en: "MD Rashid", hi: "एम डी रशीद", paidMonths: 1, phone: "919876543220" },
+            { id: 112, en: "MD Gafoor", hi: "एम डी गफ्फार", paidMonths: 1, phone: "919876543221" },
+            { id: 113, en: "MD Anwar", hi: "एम डी अनवर", paidMonths: 1, phone: "919876543222" },
+            { id: 114, en: "MD Shamim", hi: "एम डी शमीम", paidMonths: 1, phone: "919876543223" },
+            { id: 115, en: "MD Zahir", hi: "एम डी जाहिर", paidMonths: 1, phone: "919876543224" },
+            { id: 116, en: "MD Farooq", hi: "एम डी फारूक", paidMonths: 1, phone: "919876543225" },
+            { id: 117, en: "MD Nazir", hi: "एम डी नजीर", paidMonths: 1, phone: "919876543226" },
+            { id: 118, en: "MD Qasim", hi: "एम डी कासिम", paidMonths: 1, phone: "919876543227" },
+            { id: 119, en: "MD Habib", hi: "एम डी हबीब", paidMonths: 1, phone: "919876543228" },
+            { id: 120, en: "MD Latif", hi: "एम डी लतीफ", paidMonths: 1, phone: "919876543229" },
+            { id: 121, en: "MD Sohail", hi: "एम डी सोहेल", paidMonths: 1, phone: "919876543230" },
+            { id: 122, en: "MD Arman", hi: "एम डी अरमान", paidMonths: 1, phone: "919876543231" },
+            { id: 123, en: "MD Danish", hi: "एम डी दानिश", paidMonths: 1, phone: "919876543232" },
+            { id: 124, en: "MD Aslam", hi: "एम डी असलम", paidMonths: 1, phone: "919876543233" },
+            { id: 125, en: "MD Irfan", hi: "एम डी इरफान", paidMonths: 1, phone: "919876543234" },
+            { id: 126, en: "MD Imran", hi: "एम डी इमरान", paidMonths: 1, phone: "919876543235" },
+            { id: 127, en: "MD Shahbaz", hi: "एम डी शाहबाज", paidMonths: 1, phone: "919876543236" },
+            { id: 128, en: "MD Altaf", hi: "एम डी अल्ताफ", paidMonths: 1, phone: "919876543237" },
+            { id: 129, en: "MD Shahnawaz", hi: "एम डी शाहनवाज", paidMonths: 1, phone: "919876543238" },
+            { id: 130, en: "MD Faiyaz", hi: "एम डी फैयाज", paidMonths: 1, phone: "919876543239" },
+            { id: 131, en: "MD Tanveer", hi: "एम डी तनवीर", paidMonths: 1, phone: "919876543240" },
+            { id: 132, en: "MD Wasim", hi: "एम डी वसीम", paidMonths: 1, phone: "919876543241" }
+        ];
+
+        const monthsList = [
+            "जनवरी (January)", "फरवरी (February)", "मार्च (March)", "अप्रैल (April)",
+            "मई (May)", "जून (June)", "जुलाई (July)", "अगस्त (August)",
+            "सितंबर (September)", "अक्टूबर (October)", "नवंबर (November)", "दिसंबर (December)"
+        ];
+
+        let activeMember = null;
+
+        function renderTable(data) {
+            const tbody = document.getElementById("tableBody");
+            tbody.innerHTML = "";
+            data.forEach(m => {
+                let totalPaid = m.paidMonths * 500;
+                let tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-50 cursor-pointer border-b border-slate-50 transition";
+                tr.onclick = () => openModal(m.id);
+                tr.innerHTML = `
+                    <td class="py-3.5 px-4 font-semibold text-emerald-700">${m.id}</td>
+                    <td class="py-3.5 px-4 font-medium text-slate-800">${m.en}</td>
+                    <td class="py-3.5 px-4 text-slate-600">${m.hi}</td>
+                    <td class="py-3.5 px-4 text-right font-bold text-emerald-600">₹${totalPaid}</td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
+
+        function searchMember() {
+            let query = document.getElementById("searchInput").value.toLowerCase();
+            let filtered = members.filter(m => 
+                m.en.toLowerCase().includes(query) || 
+                m.hi.toLowerCase().includes(query) || 
+                m.id.toString().includes(query)
+            );
+            renderTable(filtered);
+        }
+
+        function openModal(id) {
+            activeMember = members.find(m => m.id === id);
+            document.getElementById("modalId").innerText = activeMember.id;
+            document.getElementById("modalName").innerText = activeMember.en + " (" + activeMember.hi + ")";
+            
+            updateModalCalculations();
+            
+            let grid = document.getElementById("monthsGrid");
+            grid.innerHTML = "";
+            monthsList.forEach((mon, index) => {
+                let isPaid = index < activeMember.paidMonths;
+                let div = document.createElement("div");
+                div.className = `p-3 rounded-xl border flex items-center justify-between cursor-pointer transition ${isPaid ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-slate-50 border-slate-200 text-slate-500'}`;
+                div.onclick = () => toggleMonth(index);
+                div.innerHTML = `
+                    <span class="text-xs font-medium">${mon}</span>
+                    <i class="fa-solid ${isPaid ? 'fa-circle-check text-emerald-600 text-base' : 'fa-circle text-slate-300'}"></i>
+                `;
+                grid.appendChild(div);
+            });
+
+            document.getElementById("detailModal").classList.remove("hidden");
+        }
+
+        function toggleMonth(index) {
+            if (activeMember.paidMonths === index) {
+                activeMember.paidMonths = index + 1;
+            } else if (index < activeMember.paidMonths) {
+                activeMember.paidMonths = index;
+            } else {
+                activeMember.paidMonths = index + 1;
+            }
+            openModal(activeMember.id);
+            renderTable(members);
+            updateTotalFund();
+        }
+
+        function updateModalCalculations() {
+            let totalPaid = activeMember.paidMonths * 500;
+            let totalDue = (12 - activeMember.paidMonths) * 500;
+            document.getElementById("modalTotal").innerText = "₹" + totalPaid;
+            document.getElementById("modalDue").innerText = "₹" + totalDue;
+        }
+
+        function updateTotalFund() {
+            let grandTotal = members.reduce((sum, m) => sum + (m.paidMonths * 500), 0);
+            document.getElementById("totalFund").innerText = "₹" + grandTotal.toLocaleString('en-IN');
+        }
+
+        function closeModal() {
+            document.getElementById("detailModal").classList.add("hidden");
+        }
+
+        function openUpiModal() {
+            document.getElementById("upiModal").classList.remove("hidden");
+        }
+
+        function closeUpiModal() {
+            document.getElementById("upiModal").classList.add("hidden");
+        }
+
+        function sendWhatsAppReceipt() {
+            if(!activeMember) return;
+            let totalPaid = activeMember.paidMonths * 500;
+            let totalDue = (12 - activeMember.paidMonths) * 500;
+            let msg = `*नूरी मस्जिद फंड रसीद*\n\nनाम: ${activeMember.en} (${activeMember.hi})\nआईडी: ${activeMember.id}\nजमा महीने: ${activeMember.paidMonths} / 12\nकुल जमा राशि: ₹${totalPaid}\nबकाया राशि: ₹${totalDue}\n\n_अल्लाह आपके इस दान को कबूल फरमाए!_`;
+            let url = `https://wa.me/${activeMember.phone}?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        }
+
+        renderTable(members);
+        updateTotalFund();
     </script>
 </body>
 </html>
