@@ -96,16 +96,15 @@
                 </div>
             </div>
 
-            <p class="text-xs font-bold text-slate-600 mb-2">12 महीने का हिसाब:</p>
+            <p class="text-xs font-bold text-slate-600 mb-2">12 महीने का हिसाब (एडमिन लॉगिन के बाद क्लिक करके बदलें):</p>
             <div id="ledgerGrid" class="grid grid-cols-3 gap-2 mb-4"></div>
 
-            <!-- Payment / QR Code Section (अगर बकाया है तो दिखेगा) -->
+            <!-- Payment / QR Code Section -->
             <div id="paymentSection" class="hidden bg-slate-50 p-4 rounded-2xl border mb-4 text-center space-y-3">
-                <p class="text-xs font-bold text-rose-600">आपका कुछ महीनों का बकाया (Unpaid) बाकी है।</p>
+                <p class="text-xs font-bold text-rose-600">कुछ महीनों का बकाया (Unpaid) बाकी है।</p>
                 <p class="text-xs text-slate-600">नीचे दिए गए QR Code को स्कैन करके पेमेंट करें:</p>
                 <div class="bg-white p-3 inline-block rounded-xl border shadow-sm">
-                    <!-- PhonePe QR Image -->
-                    <div class="w-36 h-36 bg-slate-200 mx-auto flex items-center justify-center text-xs text-slate-500 font-bold overflow-hidden rounded">
+                    <div class="w-36 h-36 bg-slate-100 mx-auto flex items-center justify-center text-xs text-slate-500 font-bold overflow-hidden rounded">
                         <img src="https://i.ibb.co/3ykV20v/qr-placeholder.jpg" alt="PhonePe QR" id="qrImg" class="w-full h-full object-cover">
                     </div>
                     <p class="text-[11px] font-bold text-slate-800 mt-2">MD SAIF ALI</p>
@@ -147,7 +146,7 @@
         }, 1500);
 
         const monthNames = ["जनवरी", "फरवरी", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"];
-        let isAdmin = false;
+        let isAdmin = localStorage.getItem('nooriAdminLoggedIn') === 'true';
 
         const defaultMembers = [
             { id: 101, name: "MD Salim (एम डी सलीम)", paid: Array(12).fill(false), lastUpdated: "नया खाता" },
@@ -184,7 +183,13 @@
             { id: 132, name: "MD Wasim (एम डी वसीम)", paid: Array(12).fill(false), lastUpdated: "नया खाता" }
         ];
 
-        let members = JSON.parse(localStorage.getItem('nooriVillageApp_v4')) || defaultMembers;
+        let members = JSON.parse(localStorage.getItem('nooriVillageApp_v5')) || defaultMembers;
+
+        // Check initial admin state UI
+        if(isAdmin) {
+            document.getElementById('adminLockIcon').className = "fa-solid fa-lock-open text-emerald-600";
+            document.getElementById('adminStatusText').innerText = "एडमिन मोड चालू है";
+        }
 
         function switchTab(tab) {
             document.getElementById('viewList').classList.add('hidden');
@@ -281,6 +286,7 @@
 
             document.getElementById('modalTotalAmt').innerText = "₹" + totalAmt;
             document.getElementById('receiptAmount').innerText = "₹" + totalAmt;
+            document.getElementById('receiptDate').innerText = m.lastUpdated || "-";
 
             let statusEl = document.getElementById('modalStatusText');
             if(count > 0) {
@@ -291,7 +297,6 @@
                 statusEl.className = "text-xs font-bold px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 inline-block mt-1";
             }
 
-            // अगर कुछ बाकी है (Unpaid months मौजूद हैं) तो पेमेंट क्यूआर कोड दिखाएं
             if(count < 12) {
                 document.getElementById('paymentSection').classList.remove('hidden');
             } else {
@@ -300,7 +305,7 @@
 
             let grid = document.getElementById('ledgerGrid');
             grid.innerHTML = monthNames.map((mon, idx) => `
-                <button type="button" ${isAdmin ? `onclick="toggleMonth(${idx})"` : ''} class="p-2.5 text-xs rounded-xl border font-semibold transition ${m.paid[idx] ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-rose-50 text-rose-600 border-rose-200'}">
+                <button type="button" onclick="toggleMonth(${idx})" class="p-2.5 text-xs rounded-xl border font-semibold transition ${m.paid[idx] ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-rose-50 text-rose-600 border-rose-200'}">
                     ${mon} <br>${m.paid[idx] ? '✓ Paid' : '✗ Unpaid'}
                 </button>
             `).join('');
@@ -308,7 +313,7 @@
 
         function toggleMonth(idx) {
             if(!isAdmin) {
-                alert("आप एडमिन नहीं हैं! केवल एडमिन ही इसे बदल सकता है।");
+                alert("सुरक्षा चेतावनी: आप एडमिन नहीं हैं! पहले 'एडमिन' टैब में जाकर सही पासवर्ड डालें तभी महीने बदल पाएंगे।");
                 return;
             }
             let m = members.find(x => x.id === currentMemberId);
@@ -319,15 +324,16 @@
             let timeStr = now.toLocaleTimeString('hi-IN', { hour: '2-digit', minute: '2-digit' });
             m.lastUpdated = `${dateStr}, ${timeStr}`;
 
-            localStorage.setItem('nooriVillageApp_v4', JSON.stringify(members));
+            localStorage.setItem('nooriVillageApp_v5', JSON.stringify(members));
             renderLedgerGrid();
             renderFullList();
         }
 
         function verifyAdmin() {
             let pass = prompt("एडमिन पासवर्ड दर्ज करें:");
-            if(pass === "25800") {
+            if(pass === "1234") {
                 isAdmin = true;
+                localStorage.setItem('nooriAdminLoggedIn', 'true');
                 document.getElementById('adminLockIcon').className = "fa-solid fa-lock-open text-emerald-600";
                 document.getElementById('adminStatusText').innerText = "एडमिन मोड चालू है";
                 alert("सफलतापूर्वक लॉगिन हो गए! अब आप किसी भी मेंबर के महीने पर क्लिक करके बदल सकते हैं।");
