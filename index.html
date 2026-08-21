@@ -3,371 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>नूरी मस्जिद - डिजिटल हिसाब पोर्टल</title>
+    <title>नूरी मस्जिद - एडवांस एडमिन पोर्टल</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Poppins', sans-serif; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade { animation: fadeIn 0.3s ease-out forwards; }
-    </style>
+    <style>body { font-family: sans-serif; }</style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-emerald-50/30 min-h-screen text-slate-800 pb-20">
+<body class="bg-slate-100 pb-12">
 
-    <!-- दुआ -->
-    <div class="w-full bg-emerald-900 py-2.5 shadow-md text-center">
-        <span class="text-amber-200 font-bold tracking-wider" style="font-size: 16px;">
-            بسم الله الرحمن الرحيم
-        </span>
-    </div>
-
-    <!-- हेडर -->
-    <header class="bg-emerald-800 text-white shadow-lg sticky top-0 z-40 backdrop-blur-md bg-emerald-800/95">
-        <div class="max-w-4xl mx-auto px-4 py-3.5 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <div class="bg-white/10 p-2.5 rounded-2xl shadow-inner">
-                    <i class="fa-solid fa-mosque text-2xl text-amber-300"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg leading-tight">नूरी मस्जिद फंड</h1>
-                    <p class="text-xs text-emerald-200 font-medium">गाँव वाले लाइव डिजिटल हिसाब</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-2">
-                <button onclick="openUpiModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-3 py-2 rounded-xl text-xs font-bold shadow-sm transition flex items-center space-x-1">
-                    <i class="fa-solid fa-qrcode text-sm"></i>
-                    <span>चंदा दें</span>
-                </button>
-                <button onclick="toggleAdmin()" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-2 rounded-xl text-xs font-medium border border-emerald-600 flex items-center space-x-1.5 transition">
-                    <i class="fa-solid fa-lock text-xs text-emerald-300" id="adminLockIcon"></i>
-                    <span id="adminBtnText">एडमिन</span>
-                </button>
-            </div>
-        </div>
+    <header class="bg-emerald-800 text-white p-4 shadow-md sticky top-0 z-40 flex justify-between items-center">
+        <h1 class="font-bold text-base"><i class="fa-solid fa-mosque mr-2 text-amber-300"></i>नूरी मस्जिद फंड (एडमिन मोड)</h1>
+        <button onclick="openAddMemberModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-3 py-1.5 rounded-xl text-xs font-bold shadow">
+            + नया मेंबर जोड़ें
+        </button>
     </header>
 
-    <main class="max-w-4xl mx-auto px-4 mt-6 animate-fade">
-        <!-- एडमिन पैनल (फोन से मैनेज करने के लिए) -->
-        <div id="adminPanel" class="hidden bg-white p-5 rounded-2xl shadow-xl border border-emerald-100 mb-6 animate-fade">
-            <div class="flex justify-between items-center mb-3 pb-2 border-b">
-                <h3 class="font-bold text-emerald-800 text-sm"><i class="fa-solid fa-gear mr-1.5"></i> एडमिन कंट्रोल पैनल (मोबाइल से जोड़े/बदले)</h3>
-                <span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold">मोड चालू</span>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <input type="text" id="newNameEn" placeholder="सदस्य का नाम (English)" class="w-full bg-slate-50 border p-2.5 rounded-xl text-sm focus:outline-none focus:border-emerald-500">
-                <input type="text" id="newNameHi" placeholder="हिंदी नाम (जैसे: एम डी सलीम)" class="w-full bg-slate-50 border p-2.5 rounded-xl text-sm focus:outline-none focus:border-emerald-500">
-                <input type="text" id="newPhone" placeholder="मोबाइल नंबर (WhatsApp के लिए)" class="w-full bg-slate-50 border p-2.5 rounded-xl text-sm focus:outline-none focus:border-emerald-500">
-            </div>
-            <button onclick="addNewMember()" class="mt-3 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl text-sm shadow-sm transition">
-                + नया सदस्य जोड़ें
-            </button>
-        </div>
-
-        <!-- डैशबोर्ड कार्ड्स -->
-        <div class="grid grid-cols-2 gap-4 mb-6">
-            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 flex items-center space-x-3">
-                <div class="bg-emerald-50 p-3 rounded-xl text-emerald-600 shadow-inner">
-                    <i class="fa-solid fa-users text-xl"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-slate-500 font-medium">कुल सदस्य</p>
-                    <h2 class="text-xl font-bold text-slate-800" id="totalMembersCount">32</h2>
-                </div>
-            </div>
-            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80 flex items-center space-x-3">
-                <div class="bg-amber-50 p-3 rounded-xl text-amber-600 shadow-inner">
-                    <i class="fa-solid fa-wallet text-xl"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-slate-500 font-medium">कुल जमा राशि</p>
-                    <h2 class="text-xl font-bold text-slate-800" id="totalFund">₹0</h2>
-                </div>
-            </div>
-        </div>
-
-        <!-- सर्च बार -->
-        <div class="relative mb-6">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </span>
-            <input type="text" id="searchInput" onkeyup="searchMember()" placeholder="सदस्य का नाम खोजें (हिंदी या English)..." class="w-full bg-white pl-11 pr-4 py-3 rounded-2xl border border-slate-200 text-sm focus:outline-none focus:border-emerald-500 shadow-sm transition">
-        </div>
-
+    <main class="p-4 max-w-2xl mx-auto">
         <!-- सदस्यों की सूची -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
-            <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                <h3 class="font-bold text-slate-800 text-sm flex items-center space-x-2">
-                    <i class="fa-solid fa-list-ul text-emerald-600"></i>
-                    <span>गाँव के सदस्यों की सूची</span>
-                </h3>
-                <span class="text-xs bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-medium">हिसाब देखने के लिए क्लिक करें</span>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-100">
-                            <th class="py-3 px-4 font-semibold">आईडी</th>
-                            <th class="py-3 px-4 font-semibold">नाम (ENGLISH)</th>
-                            <th class="py-3 px-4 font-semibold">हिंदी नाम</th>
-                            <th class="py-3 px-4 font-semibold text-right">कुल जमा राशि</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 text-sm" id="tableBody">
-                        <!-- डेटा यहाँ लोड होगा -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <div id="memberList" class="space-y-3"></div>
     </main>
 
-    <!-- मेंबर डिटेल और हिस्ट्री मॉडल (Popup) -->
-    <div id="detailModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 animate-fade">
-            <div class="flex justify-between items-center border-b pb-4 mb-4">
+    <!-- मेंबर एडिट और डिटेल मॉडल -->
+    <div id="editModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
                 <div>
-                    <h3 id="modalName" class="font-bold text-lg text-slate-800">नाम</h3>
-                    <p class="text-xs text-slate-500">आईडी: <span id="modalId"></span> | मोबाइल: <span id="modalPhone"></span></p>
+                    <h3 id="modalTitle" class="font-bold text-lg text-slate-800">डिटेल एडिट करें</h3>
+                    <p class="text-xs text-slate-500">आईडी: <span id="modalId"></span></p>
                 </div>
-                <button onclick="closeModal()" class="bg-slate-100 hover:bg-slate-200 p-2.5 rounded-full text-slate-600 transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
+                <button onclick="closeModal()" class="bg-slate-100 p-2 rounded-full text-slate-600"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <div class="mb-4 bg-gradient-to-r from-emerald-50 to-teal-50 p-4 rounded-2xl flex justify-between items-center border border-emerald-100 shadow-sm">
+            <!-- मोबाइल नंबर और तारीख -->
+            <div class="space-y-3 mb-4">
                 <div>
-                    <p class="text-xs text-emerald-700 font-medium">कुल जमा (इस साल)</p>
-                    <h4 id="modalTotal" class="text-2xl font-bold text-emerald-800">₹0</h4>
+                    <label class="text-xs font-semibold text-slate-600">मोबाइल नंबर (WhatsApp के लिए)</label>
+                    <input type="text" id="editPhone" placeholder="मोबाइल नंबर दर्ज करें" class="w-full bg-slate-50 border p-2.5 rounded-xl text-sm mt-1">
                 </div>
-                <div class="text-right">
-                    <p class="text-xs text-red-600 font-medium">बकाया राशि</p>
-                    <h4 id="modalDue" class="text-xl font-bold text-red-600">₹0</h4>
+                <div>
+                    <label class="text-xs font-semibold text-slate-600">अंतिम भुगतान की तारीख (Payment Date)</label>
+                    <input type="date" id="editDate" class="w-full bg-slate-50 border p-2.5 rounded-xl text-sm mt-1">
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-slate-600">भुगतान का तरीका (Payment Mode)</label>
+                    <select id="editMode" class="w-full bg-slate-50 border p-2.5 rounded-xl text-sm mt-1">
+                        <option value="Cash (नकद)">Cash (नकद)</option>
+                        <option value="Online (ऑनलाइन UPI)">Online (ऑनलाइन UPI)</option>
+                    </select>
                 </div>
             </div>
 
-            <h4 class="font-bold text-slate-700 text-sm mb-3"><i class="fa-regular fa-calendar-days text-emerald-600 mr-1.5"></i> साल 2026 का महीना-वार हिसाब (प्रत्येक माह ₹500):</h4>
-            <p class="text-[11px] text-slate-400 mb-3">महीने पर क्लिक करके पेमेंट चालू (Paid) या बंद (Unpaid) करें:</p>
-            
-            <div class="grid grid-cols-2 gap-2.5 mb-6" id="monthsGrid">
-                <!-- महीने यहाँ जनरेट होंगे -->
+            <!-- महीने का हिसाब -->
+            <div class="mb-4">
+                <label class="text-xs font-semibold text-slate-600 mb-2 block">महीनेवार हिसाब (क्लिक करके Paid/Unpaid करें)</label>
+                <div id="monthsGrid" class="grid grid-cols-3 gap-2"></div>
             </div>
 
-            <div class="flex space-x-3">
-                <button onclick="sendWhatsAppReceipt()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl font-medium text-sm flex items-center justify-center space-x-2 shadow-md transition">
-                    <i class="fa-brands fa-whatsapp text-lg text-emerald-200"></i>
-                    <span>WhatsApp रसीद भेजें</span>
-                </button>
-                <button onclick="closeModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-5 py-3 rounded-2xl font-medium text-sm transition">
-                    बंद करें
-                </button>
-            </div>
+            <button onclick="saveMemberDetails()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-sm shadow mb-2">
+                बदलाव सेव करें (Save)
+            </button>
+            <button onclick="closeModal()" class="w-full bg-slate-200 text-slate-700 py-2.5 rounded-xl font-medium text-xs">
+                रद्द करें
+            </button>
         </div>
     </div>
 
-    <!-- UPI / QR कोड पेमेंट पॉप-अप -->
-    <div id="upiModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl max-w-sm w-full text-center p-6 shadow-2xl relative animate-fade">
-            <button onclick="closeUpiModal()" class="absolute top-4 right-4 bg-slate-100 hover:bg-slate-200 p-2.5 rounded-full text-slate-600 transition">
-                <i class="fa-solid fa-xmark text-base"></i>
-            </button>
-            <div class="bg-amber-50 w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-3 text-amber-600 shadow-inner">
-                <i class="fa-solid fa-qrcode text-2xl"></i>
-            </div>
-            <h3 class="font-bold text-lg text-slate-800 mb-1">ऑनलाइन चंदा दें</h3>
-            <p class="text-xs text-slate-500 mb-4">GPay, PhonePe या Paytm से सीधे स्कैन करके भेजें</p>
-            
-            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 mb-4 inline-block w-full">
-                <div class="font-bold text-emerald-800 text-base mb-1">Kaif Jee</div>
-                <div class="bg-white p-2.5 rounded-xl border border-slate-200 mb-3 shadow-sm">
-                    <p class="text-xs text-slate-400 font-mono select-all">UPI ID: <b class="text-slate-800">kaifjee2580@okaxis</b></p>
-                </div>
-                <a href="upi://pay?pa=kaifjee2580@okaxis&pn=Kaif%20Jee&cu=INR" class="block w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-xl font-bold text-xs shadow-md transition">
-                    <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> सीधे भुगतान ऐप खोलें (Pay Now)
-                </a>
-            </div>
-
-            <p class="text-[11px] text-slate-400">पैसा भेजने के बाद एडमिन को स्क्रीनशॉट जरूर भेजें।</p>
+    <!-- नया मेंबर जोड़ने का मॉडल -->
+    <div id="addModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl">
+            <h3 class="font-bold text-lg text-slate-800 mb-3">नया सदस्य जोड़ें</h3>
+            <input type="text" id="newEnName" placeholder="नाम (English में)" class="w-full border p-2.5 rounded-xl text-sm mb-3">
+            <input type="text" id="newHiName" placeholder="हिंदी नाम (जैसे: एम डी सलीम)" class="w-full border p-2.5 rounded-xl text-sm mb-3">
+            <input type="text" id="newPhone" placeholder="मोबाइल नंबर" class="w-full border p-2.5 rounded-xl text-sm mb-4">
+            <button onclick="addNewMemberAction()" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl font-bold text-sm mb-2">जोड़ें</button>
+            <button onclick="closeAddMemberModal()" class="w-full bg-slate-200 py-2 rounded-xl text-xs">बंद करें</button>
         </div>
     </div>
 
     <script>
-        // सदस्यों का डेटा (फोन के LocalStorage में सेव रहेगा ताकि उड़े नहीं)
-        let members = JSON.parse(localStorage.getItem('nooriFundData')) || [
-            { id: 101, en: "MD Salim", hi: "एम डी सलीम", paidMonths: 1, phone: "919876543210" },
-            { id: 102, en: "MD Haleem", hi: "एम डी हलीम", paidMonths: 1, phone: "919876543211" },
-            { id: 103, en: "MD mustaqim", hi: "एम डी मुर्तकीम", paidMonths: 1, phone: "919876543212" },
-            { id: 104, en: "MD Akbar", hi: "एम डी अकबर", paidMonths: 1, phone: "919876543213" },
-            { id: 105, en: "MD Hakim", hi: "एम डी हकीम", paidMonths: 1, phone: "919876543214" },
-            { id: 106, en: "Md Kalam", hi: "एम डी कलाम", paidMonths: 1, phone: "919876543215" },
-            { id: 107, en: "MD Idris", hi: "एम डी इद्रीस", paidMonths: 1, phone: "919876543216" },
-            { id: 108, en: "MD Salam", hi: "एम डी सलाम", paidMonths: 1, phone: "919876543217" },
-            { id: 109, en: "MD Javed", hi: "एम डी जावेद", paidMonths: 1, phone: "919876543218" },
-            { id: 110, en: "md hanif", hi: "एम डी हनीफ", paidMonths: 1, phone: "919876543219" },
-            { id: 111, en: "MD Rashid", hi: "एम डी रशीद", paidMonths: 1, phone: "919876543220" },
-            { id: 112, en: "MD Gafoor", hi: "एम डी गफ्फार", paidMonths: 1, phone: "919876543221" },
-            { id: 113, en: "MD Anwar", hi: "एम डी अनवर", paidMonths: 1, phone: "919876543222" },
-            { id: 114, en: "MD Shamim", hi: "एम डी शमीम", paidMonths: 1, phone: "919876543223" },
-            { id: 115, en: "MD Zahir", hi: "एम डी जाहिर", paidMonths: 1, phone: "919876543224" },
-            { id: 116, en: "MD Farooq", hi: "एम डी फारूक", paidMonths: 1, phone: "919876543225" },
-            { id: 117, en: "MD Nazir", hi: "एम डी नजीर", paidMonths: 1, phone: "919876543226" },
-            { id: 118, en: "MD Qasim", hi: "एम डी कासिम", paidMonths: 1, phone: "919876543227" },
-            { id: 119, en: "MD Habib", hi: "एम डी हबीब", paidMonths: 1, phone: "919876543228" },
-            { id: 120, en: "MD Latif", hi: "एम डी लतीफ", paidMonths: 1, phone: "919876543229" },
-            { id: 121, en: "MD Sohail", hi: "एम डी सोहेल", paidMonths: 1, phone: "919876543230" },
-            { id: 122, en: "MD Arman", hi: "एम डी अरमान", paidMonths: 1, phone: "919876543231" },
-            { id: 123, en: "MD Danish", hi: "एम डी दानिश", paidMonths: 1, phone: "919876543232" },
-            { id: 124, en: "MD Aslam", hi: "एम डी असलम", paidMonths: 1, phone: "919876543233" },
-            { id: 125, en: "MD Irfan", hi: "एम डी इरफान", paidMonths: 1, phone: "919876543234" },
-            { id: 126, en: "MD Imran", hi: "एम डी इमरान", paidMonths: 1, phone: "919876543235" },
-            { id: 127, en: "MD Shahbaz", hi: "एम डी शाहबाज", paidMonths: 1, phone: "919876543236" },
-            { id: 128, en: "MD Altaf", hi: "एम डी अल्ताफ", paidMonths: 1, phone: "919876543237" },
-            { id: 129, en: "MD Shahnawaz", hi: "एम डी शाहनवाज", paidMonths: 1, phone: "919876543238" },
-            { id: 130, en: "MD Faiyaz", hi: "एम डी फैयाज", paidMonths: 1, phone: "919876543239" },
-            { id: 131, en: "MD Tanveer", hi: "एम डी तनवीर", paidMonths: 1, phone: "919876543240" },
-            { id: 132, en: "MD Wasim", hi: "एम डी वसीम", paidMonths: 1, phone: "919876543241" }
+        const monthNames = ["जनवरी", "फरवरी", "मार्च", "अप्रैल", "मई", "जून", "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"];
+
+        let members = JSON.parse(localStorage.getItem('nooriFullAdminData')) || [
+            { id: 101, en: "MD Salim", hi: "एम डी सलीम", phone: "9876543210", date: "2026-01-10", mode: "Cash (नकद)", paid: [true, false, false, false, false, false, false, false, false, false, false, false] },
+            { id: 102, en: "MD Haleem", hi: "एम डी हलीम", phone: "9876543211", date: "", mode: "Cash (नकद)", paid: [false, false, false, false, false, false, false, false, false, false, false, false] }
         ];
 
-        const monthsList = [
-            "जनवरी (January)", "फरवरी (February)", "मार्च (March)", "अप्रैल (April)",
-            "मई (May)", "जून (June)", "जुलाई (July)", "अगस्त (August)",
-            "सितंबर (September)", "अक्टूबर (October)", "नवंबर (November)", "दिसंबर (December)"
-        ];
-
-        let activeMember = null;
-
-        function saveData() {
-            localStorage.setItem('nooriFundData', JSON.stringify(members));
-        }
-
-        function renderTable(data) {
-            const tbody = document.getElementById("tableBody");
-            tbody.innerHTML = "";
-            data.forEach(m => {
-                let totalPaid = m.paidMonths * 500;
-                let tr = document.createElement("tr");
-                tr.className = "hover:bg-emerald-50/50 cursor-pointer border-b border-slate-100 transition duration-150";
-                tr.onclick = () => openModal(m.id);
-                tr.innerHTML = `
-                    <td class="py-3.5 px-4 font-semibold text-emerald-700">${m.id}</td>
-                    <td class="py-3.5 px-4 font-medium text-slate-800">${m.en}</td>
-                    <td class="py-3.5 px-4 text-slate-600">${m.hi}</td>
-                    <td class="py-3.5 px-4 text-right font-bold text-emerald-600">₹${totalPaid.toLocaleString('en-IN')}</td>
+        function renderList() {
+            let list = document.getElementById('memberList');
+            list.innerHTML = members.map(m => {
+                let paidCount = m.paid.filter(Boolean).length;
+                let totalPaidAmt = paidCount * 500;
+                return `
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center cursor-pointer hover:border-emerald-500 transition" onclick="openEdit(${m.id})">
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">#${m.id}</span>
+                                <h4 class="font-bold text-slate-800 text-sm">${m.en} (${m.hi})</h4>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-phone text-[10px] mr-1"></i>${m.phone || 'नंबर नहीं है'} | मोड: ${m.mode || 'Cash'}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">₹${totalPaidAmt} जमा</span>
+                            <p class="text-[10px] text-slate-400 mt-1">${paidCount}/12 महीने</p>
+                        </div>
+                    </div>
                 `;
-                tbody.appendChild(tr);
-            });
-            document.getElementById("totalMembersCount").innerText = members.length;
-            updateTotalFund();
+            }).join('');
         }
 
-        function searchMember() {
-            let query = document.getElementById("searchInput").value.toLowerCase();
-            let filtered = members.filter(m => 
-                m.en.toLowerCase().includes(query) || 
-                m.hi.toLowerCase().includes(query) || 
-                m.id.toString().includes(query)
-            );
-            renderTable(filtered);
+        let currentEditId = null;
+        function openEdit(id) {
+            currentEditId = id;
+            let m = members.find(x => x.id === id);
+            document.getElementById('modalId').innerText = m.id;
+            document.getElementById('modalTitle').innerText = m.en + " (" + m.hi + ")";
+            document.getElementById('editPhone').value = m.phone || "";
+            document.getElementById('editDate').value = m.date || "";
+            document.getElementById('editMode').value = m.mode || "Cash (नकद)";
+
+            let grid = document.getElementById('monthsGrid');
+            grid.innerHTML = monthNames.map((mon, idx) => `
+                <button type="button" onclick="toggleMonth(${idx})" class="p-2 text-xs rounded-xl border font-medium transition ${m.paid[idx] ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm' : 'bg-slate-50 text-slate-500 border-slate-200'}">
+                    ${mon} ${m.paid[idx] ? '✓' : ''}
+                </button>
+            `).join('');
+
+            document.getElementById('editModal').classList.remove('hidden');
         }
 
-        function openModal(id) {
-            activeMember = members.find(m => m.id === id);
-            document.getElementById("modalId").innerText = activeMember.id;
-            document.getElementById("modalName").innerText = activeMember.en + " (" + activeMember.hi + ")";
-            document.getElementById("modalPhone").innerText = activeMember.phone || "उपलब्ध नहीं";
+        function toggleMonth(idx) {
+            let m = members.find(x => x.id === currentEditId);
+            m.paid[idx] = !m.paid[idx];
+            openEdit(currentEditId); // रिफ्रेश करने के लिए
+        }
+
+        function saveMemberDetails() {
+            let m = members.find(x => x.id === currentEditId);
+            m.phone = document.getElementById('editPhone').value;
+            m.date = document.getElementById('editDate').value;
+            m.mode = document.getElementById('editMode').value;
             
-            updateModalCalculations();
-            
-            let grid = document.getElementById("monthsGrid");
-            grid.innerHTML = "";
-            monthsList.forEach((mon, index) => {
-                let isPaid = index < activeMember.paidMonths;
-                let div = document.createElement("div");
-                div.className = `p-3 rounded-2xl border flex items-center justify-between cursor-pointer transition duration-200 ${isPaid ? 'bg-emerald-50 border-emerald-300 text-emerald-900 shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-400'}`;
-                div.onclick = () => toggleMonth(index);
-                div.innerHTML = `
-                    <span class="text-xs font-medium">${mon}</span>
-                    <i class="fa-solid ${isPaid ? 'fa-circle-check text-emerald-600 text-base' : 'fa-circle text-slate-300'}"></i>
-                `;
-                grid.appendChild(div);
+            localStorage.setItem('nooriFullAdminData', JSON.stringify(members));
+            renderList();
+            closeModal();
+            alert("डेटा सफलतापूर्वक सेव हो गया है!");
+        }
+
+        function closeModal() { document.getElementById('editModal').classList.add('hidden'); }
+        function openAddMemberModal() { document.getElementById('addModal').classList.remove('hidden'); }
+        function closeAddMemberModal() { document.getElementById('addModal').classList.add('hidden'); }
+
+        function addNewMemberAction() {
+            let en = document.getElementById('newEnName').value.trim();
+            let hi = document.getElementById('newHiName').value.trim();
+            let phone = document.getElementById('newPhone').value.trim();
+            if(!en) { alert("कृपया नाम दर्ज करें!"); return; }
+
+            let newId = members.length > 0 ? Math.max(...members.map(x => x.id)) + 1 : 101;
+            members.push({
+                id: newId,
+                en: en,
+                hi: hi || en,
+                phone: phone,
+                date: "",
+                mode: "Cash (नकद)",
+                paid: [false, false, false, false, false, false, false, false, false, false, false, false]
             });
 
-            document.getElementById("detailModal").classList.remove("hidden");
+            localStorage.setItem('nooriFullAdminData', JSON.stringify(members));
+            renderList();
+            closeAddMemberModal();
+            document.getElementById('newEnName').value = "";
+            document.getElementById('newHiName').value = "";
+            document.getElementById('newPhone').value = "";
+            alert("नया मेंबर जुड़ गया है!");
         }
 
-        function toggleMonth(index) {
-            if (activeMember.paidMonths === index) {
-                activeMember.paidMonths = index + 1;
-            } else if (index < activeMember.paidMonths) {
-                activeMember.paidMonths = index;
-            } else {
-                activeMember.paidMonths = index + 1;
-            }
-            saveData();
-            openModal(activeMember.id);
-            renderTable(members);
-        }
-
-        function updateModalCalculations() {
-            let totalPaid = activeMember.paidMonths * 500;
-            let totalDue = (12 - activeMember.paidMonths) * 500;
-            document.getElementById("modalTotal").innerText = "₹" + totalPaid.toLocaleString('en-IN');
-            document.getElementById("modalDue").innerText = "₹" + totalDue.toLocaleString('en-IN');
-        }
-
-        function updateTotalFund() {
-            let grandTotal = members.reduce((sum, m) => sum + (m.paidMonths * 500), 0);
-            document.getElementById("totalFund").innerText = "₹" + grandTotal.toLocaleString('en-IN');
-        }
-
-        function closeModal() {
-            document.getElementById("detailModal").classList.add("hidden");
-        }
-
-        function openUpiModal() {
-            document.getElementById("upiModal").classList.remove("hidden");
-        }
-
-        function closeUpiModal() {
-            document.getElementById("upiModal").classList.add("hidden");
-        }
-
-        function toggleAdmin() {
-            let panel = document.getElementById("adminPanel");
-            panel.classList.toggle("hidden");
-        }
-
-        function addNewMember() {
-            let en = document.getElementById("newNameEn").value.trim();
-            let hi = document.getElementById("newNameHi").value.trim();
-            let phone = document.getElementById("newPhone").value.trim() || "919876543210";
-
-            if(!en) {
-                alert("कृपया सदस्य का नाम दर्ज करें!");
-                return;
-            }
-
-            let newId = members.length > 0 ? Math.max(...members.map(m => m.id)) + 1 : 101;
-            members.push({ id: newId, en: en, hi: hi || en, paidMonths: 0, phone: phone });
-            saveData();
-            renderTable(members);
-
-            document.getElementById("newNameEn").value = "";
-            document.getElementById("newNameHi").value = "";
-            document.getElementById("newPhone").value = "";
-            alert("नया सदस्य सफलतापूर्वक जुड़ गया है!");
-        }
-
-        function sendWhatsAppReceipt() {
-            if(!activeMember) return;
-            let totalPaid = activeMember.paidMonths * 500;
-            let totalDue = (12 - activeMember.paidMonths) * 500;
-            let msg = `*नूरी मस्जिद फंड रसीद*\n\nनाम: ${activeMember.en} (${activeMember.hi})\nआईडी: ${activeMember.id}\nजमा महीने: ${activeMember.paidMonths} / 12\nकुल जमा राशि: ₹${totalPaid}\nबकाया राशि: ₹${totalDue}\n\n_अल्लाह आपके इस चंदे को कबूल फरमाए!_`;
-            let url = `https://wa.me/${activeMember.phone}?text=${encodeURIComponent(msg)}`;
-            window.open(url, '_blank');
-        }
-
-        renderTable(members);
+        renderList();
     </script>
 </body>
 </html>
