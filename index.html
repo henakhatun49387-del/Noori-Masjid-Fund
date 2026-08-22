@@ -3,270 +3,352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>नूरी मस्जिद - Ultra VIP Cloud Ledger</title>
+    <title>नूरी मस्जिद - डिजिटल चंदा पोर्टल</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #030712; color: #f3f4f6; }
-        .glass-card { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-card { background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .emerald-gradient { background: linear-gradient(135deg, #065f46 0%, #047857 100%); }
         .gold-gradient { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); }
-        .emerald-glow { box-shadow: 0 0 25px rgba(16, 185, 129, 0.15); }
-        #splash { position: fixed; inset: 0; background: #030712; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.5s ease; }
+        
+        #splash {
+            position: fixed; inset: 0; background: #030712; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000;
+            animation: splashFadeOut 0.8s ease 2.5s forwards;
+        }
+        .splash-content {
+            animation: scaleInBounce 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes scaleInBounce {
+            0% { transform: scale(0.3); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes splashFadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+
         @media print {
             body * { visibility: hidden; }
-            #receiptCard, #receiptCard * { visibility: visible; }
-            #receiptCard { position: absolute; left: 0; top: 0; width: 100%; border: 2px solid #059669; padding: 24px; background: white; color: black; }
+            #fullHistoryPdfCard, #fullHistoryPdfCard * { visibility: visible; }
+            #fullHistoryPdfCard { position: absolute; left: 0; top: 0; width: 100%; background: white; color: black; padding: 20px; border-radius: 0; box-shadow: none; }
         }
     </style>
 </head>
 <body class="pb-28">
 
-    <!-- Splash Screen -->
+    <!-- स्प्लैश स्क्रीन -->
     <div id="splash">
-        <div class="w-24 h-24 bg-gradient-to-tr from-emerald-600 to-amber-500 rounded-3xl flex items-center justify-center mb-5 shadow-2xl animate-bounce">
-            <i class="fa-solid fa-kaaba text-4xl text-white"></i>
+        <div class="splash-content text-center flex flex-col items-center">
+            <div class="w-28 h-28 bg-gradient-to-tr from-emerald-600 via-teal-500 to-amber-400 rounded-3xl flex items-center justify-center mb-5 shadow-2xl border border-emerald-400/40">
+                <i class="fa-solid fa-kaaba text-5xl text-white"></i>
+            </div>
+            <h1 class="text-2xl font-black text-white tracking-wider">नूरी मस्जिद</h1>
+            <p class="text-xs text-amber-400 mt-1 font-bold tracking-widest uppercase">डिजिटल चंदा लेजर पोर्टल</p>
+            <div class="mt-6">
+                <p class="text-sm font-bold text-emerald-300 tracking-wide" style="font-family: serif;">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+            </div>
         </div>
-        <h1 class="text-2xl font-extrabold tracking-wider text-white">NOORI MASJID</h1>
-        <p class="text-xs text-amber-400 mt-1 font-semibold tracking-widest uppercase">Ultra VIP Cloud System</p>
     </div>
 
-    <!-- Header -->
-    <header class="bg-slate-900/90 backdrop-blur-xl border-b border-slate-800 pt-8 pb-4 px-4 sticky top-0 z-40">
+    <!-- हेडर -->
+    <header class="bg-slate-900 border-b border-slate-800 pt-5 pb-3 px-4 sticky top-0 z-40">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 gold-gradient text-slate-950 rounded-2xl flex items-center justify-center font-black text-base shadow-lg">NM</div>
+                <div class="w-9 h-9 gold-gradient text-slate-950 rounded-xl flex items-center justify-center font-black text-sm shadow">नू</div>
                 <div>
-                    <h2 class="font-extrabold text-sm tracking-wide text-white">नूरी मस्जिद पोर्टल</h2>
-                    <p class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> क्लाउड सिक्योर कनेक्टेड
-                    </p>
+                    <h2 class="font-extrabold text-xs text-white">नूरी मस्जिद चंदा पोर्टल</h2>
+                    <p class="text-[10px] text-emerald-400 font-semibold" id="adminBadgeText">मोड: सामान्य सदस्य</p>
                 </div>
             </div>
-            <div id="syncStatus" class="bg-slate-800 border border-slate-700 px-3 py-1 rounded-full text-[10px] text-amber-300 font-bold shadow-inner">
-                लाइव मोड
+            <div class="flex items-center gap-2">
+                <button onclick="openScannerModal()" class="bg-emerald-600/20 border border-emerald-500/40 px-3 py-1.5 rounded-xl text-[10px] text-emerald-400 font-bold shadow flex items-center gap-1">
+                    <i class="fa-solid fa-qrcode"></i> स्कैनर QR
+                </button>
+                <button onclick="openAdminModal()" class="w-8 h-8 bg-slate-800 border border-slate-700 rounded-xl text-amber-400 font-bold shadow flex items-center justify-center">
+                    <i class="fa-solid fa-lock text-xs"></i>
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Navigation Tabs -->
-    <nav class="flex bg-slate-900/90 backdrop-blur-md shadow-lg px-4 py-2.5 border-b border-slate-800 justify-around sticky top-[105px] z-30 max-w-md mx-auto">
-        <button onclick="switchTab('list')" id="tabList" class="font-bold text-xs text-emerald-400 px-4 py-2 rounded-xl bg-emerald-950/50 border border-emerald-800/50 transition flex items-center gap-2">
-            <i class="fa-solid fa-chart-pie"></i> सूची
+    <!-- नेविगेशन टैब्स -->
+    <nav class="flex bg-slate-900 shadow px-4 py-2 border-b border-slate-800 justify-around sticky top-[73px] z-30 max-w-md mx-auto">
+        <button onclick="switchTab('list')" id="tabList" class="font-bold text-xs text-emerald-400 px-6 py-2 rounded-xl bg-emerald-950/60 border border-emerald-800/50 flex items-center gap-2">
+            <i class="fa-solid fa-list"></i> सभी सदस्य
         </button>
-        <button onclick="switchTab('search')" id="tabSearch" class="font-bold text-xs text-slate-400 px-4 py-2 rounded-xl transition flex items-center gap-2">
+        <button onclick="switchTab('search')" id="tabSearch" class="font-bold text-xs text-slate-400 px-6 py-2 rounded-xl flex items-center gap-2">
             <i class="fa-solid fa-magnifying-glass"></i> खोजें
-        </button>
-        <button onclick="switchTab('admin')" id="tabAdmin" class="font-bold text-xs text-slate-400 px-4 py-2 rounded-xl transition flex items-center gap-2">
-            <i class="fa-solid fa-shield-halved"></i> एडमिन
         </button>
     </nav>
 
-    <!-- Main Container -->
+    <!-- मुख्य कंटेंट्स -->
     <main class="p-4 max-w-md mx-auto space-y-4">
 
-        <!-- 1. List / Dashboard Tab -->
+        <!-- 1. सदस्यों की सूची टैब -->
         <div id="viewList" class="space-y-4">
-            <div class="emerald-gradient p-6 rounded-3xl relative overflow-hidden emerald-glow border border-emerald-500/30">
-                <div class="absolute -right-6 -bottom-6 text-emerald-900/30 text-8xl"><i class="fa-solid fa-vault"></i></div>
-                <p class="text-[11px] font-bold text-amber-300 uppercase tracking-widest">कुल वार्षिक संग्रह (Live Cloud)</p>
-                <h3 id="totalCollectionAmt" class="text-3xl font-black tracking-tight mt-1 text-white">₹0</h3>
-                <div class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-emerald-700/50">
-                    <div>
-                        <p class="text-[10px] text-emerald-200 font-semibold">कुल सदस्य</p>
-                        <p id="totalMembersCount" class="text-sm font-extrabold text-white">0</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-emerald-200 font-semibold">सक्रिय महीने</p>
-                        <p class="text-sm font-extrabold text-amber-300">12 महीने (2026)</p>
-                    </div>
-                </div>
+            <div class="flex justify-between items-center px-1 pt-1">
+                <h3 class="font-extrabold text-xs text-slate-300 uppercase tracking-wider">सदस्यों की सूची</h3>
+                <span class="text-[10px] text-amber-400 font-bold">विवरण देखने के लिए क्लिक करें</span>
             </div>
-
-            <div class="flex justify-between items-center px-1">
-                <h3 class="font-extrabold text-xs text-slate-300 uppercase tracking-wider">सभी सदस्यों की सूची</h3>
-                <span class="text-[10px] text-slate-500 font-bold">क्लिक करके पासबुक देखें</span>
-            </div>
-
-            <div id="fullMemberList" class="space-y-2.5">
-                <p class="text-center text-xs text-slate-400 py-8">डेटा लोड किया जा रहा है...</p>
-            </div>
+            <div id="fullMemberList" class="space-y-2"></div>
         </div>
 
-        <!-- 2. Search Tab -->
+        <!-- 2. खोजें टैब -->
         <div id="viewSearch" class="hidden space-y-4">
-            <div class="glass-card p-4 rounded-3xl">
-                <label class="text-xs font-bold text-slate-300 block mb-2">नाम या आईडी नंबर दर्ज करें</label>
+            <div class="glass-card p-4 rounded-2xl">
+                <label class="text-xs font-bold text-slate-300 block mb-2">नाम या आईडी से खोजें</label>
                 <div class="relative">
-                    <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
-                    <input type="text" id="searchInput" placeholder="जैसे: Salim या 101..." oninput="handleSearch()" class="w-full bg-slate-900 border border-slate-700 text-xs pl-10 pr-4 py-3 rounded-xl outline-none focus:border-amber-400 text-white font-medium">
+                    <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+                    <input type="text" id="searchInput" placeholder="जैसे: Salim, सलीम या 101..." oninput="handleSearch()" class="w-full bg-slate-900 border border-slate-700 text-xs pl-9 pr-4 py-2.5 rounded-xl outline-none focus:border-amber-400 text-white font-medium">
                 </div>
             </div>
-            <div id="searchResults" class="space-y-2.5"></div>
+            <div id="searchResults" class="space-y-2"></div>
         </div>
 
-        <!-- 3. Admin Tab -->
-        <div id="viewAdmin" class="hidden space-y-4">
-            <div id="adminLoginCard" class="glass-card p-6 rounded-3xl text-center space-y-4">
-                <div class="w-14 h-14 bg-amber-500/10 text-amber-400 rounded-2xl flex items-center justify-center mx-auto text-xl border border-amber-500/20">
+    </main>
+
+    <!-- एडमिन लॉगिन / पैनल मोडल -->
+    <div id="adminModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="glass-card rounded-2xl p-5 w-full max-w-sm max-h-[90vh] overflow-y-auto border border-slate-700 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-shield-halved text-amber-400"></i> एडमिन पैनल</h3>
+                <button onclick="closeAdminModal()" class="bg-slate-800 w-7 h-7 rounded-full flex items-center justify-center text-slate-300"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- लॉगिन कार्ड -->
+            <div id="adminLoginCard" class="space-y-3 py-2 text-center">
+                <div class="w-12 h-12 bg-amber-500/10 text-amber-400 rounded-xl flex items-center justify-center mx-auto text-lg border border-amber-500/20">
                     <i class="fa-solid fa-lock"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-sm text-white">VIP एडमिन पोर्टल</h3>
-                    <p class="text-xs text-slate-400 mt-1">हिसाब बदलने के लिए पिन दर्ज करें।</p>
+                    <h3 class="font-bold text-xs text-white">ग्रुप एडमिन लॉगिन</h3>
+                    <p class="text-[11px] text-slate-400">पिन दर्ज करें</p>
                 </div>
-                <div class="space-y-3 pt-2">
-                    <input type="password" id="adminPasswordInput" placeholder="पासवर्ड (Default: 1234)" class="w-full bg-slate-900 border border-slate-700 text-xs text-center px-4 py-3.5 rounded-xl outline-none focus:border-amber-400 text-white font-bold">
-                    <button onclick="verifyAdmin()" class="w-full gold-gradient text-slate-950 py-3.5 rounded-xl font-extrabold text-xs shadow-lg transition">
+                <div class="space-y-2.5 pt-1">
+                    <input type="password" id="adminPasswordInput" placeholder="पिन दर्ज करें..." class="w-full bg-slate-900 border border-slate-700 text-xs text-center px-4 py-3 rounded-xl outline-none focus:border-amber-400 text-white font-bold">
+                    <button onclick="verifyAdmin()" class="w-full gold-gradient text-slate-950 py-3 rounded-xl font-extrabold text-xs shadow">
                         लॉगिन करें
                     </button>
                 </div>
             </div>
 
+            <!-- एडमिन कंट्रोल्स -->
             <div id="adminPanelContent" class="hidden space-y-4">
-                <div class="bg-gradient-to-r from-emerald-900 to-slate-900 text-white p-4 rounded-3xl flex justify-between items-center border border-emerald-800/50">
+                <div class="bg-emerald-950/80 border border-emerald-800 p-3 rounded-xl flex justify-between items-center">
                     <div>
-                        <p class="text-[10px] text-emerald-300 uppercase font-semibold">Master Controller</p>
-                        <h4 class="font-bold text-xs">एडमिन एक्सेस एक्टिव</h4>
+                        <p class="text-[10px] text-emerald-300 font-semibold">स्थिति</p>
+                        <h4 class="font-bold text-xs text-white">एडमिन अधिकार सक्रिय हैं</h4>
                     </div>
-                    <button onclick="logoutAdmin()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-1.5 rounded-xl font-bold transition">
+                    <button onclick="logoutAdmin()" class="bg-rose-600 hover:bg-rose-700 text-white text-[10px] px-3 py-1.5 rounded-xl font-bold">
                         लॉग आउट
                     </button>
                 </div>
 
-                <div class="glass-card p-5 rounded-3xl space-y-3">
-                    <h4 class="font-bold text-xs text-amber-400 flex items-center gap-2 border-b border-slate-800 pb-2 uppercase tracking-wider">
-                        <i class="fa-solid fa-qrcode"></i> ऑनलाइन पेमेंट UPI ID
+                <!-- सदस्यों द्वारा भेजे गए पेमेंट स्क्रीनशॉट बॉक्स -->
+                <div class="bg-slate-900 p-3 rounded-xl space-y-2.5 border border-amber-500/30">
+                    <h4 class="font-bold text-xs text-amber-400 border-b border-slate-800 pb-2 uppercase flex items-center justify-between">
+                        <span><i class="fa-solid fa-receipt"></i> मिले हुए स्क्रीनशॉट</span>
+                        <span class="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded">वेरिफिकेशन</span>
                     </h4>
-                    <input type="text" id="upiIdInput" placeholder="जैसे: kaifjee2580@okaxis" class="w-full bg-slate-900 border border-slate-700 text-xs px-3.5 py-3 rounded-xl outline-none focus:border-amber-400 text-white font-bold">
-                    <button onclick="saveUpiId()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-xs shadow transition">
+                    <div id="adminScreenshotsList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+                </div>
+
+                <!-- WhatsApp नंबर बदलने का बॉक्स -->
+                <div class="bg-slate-900 p-3 rounded-xl space-y-2">
+                    <h4 class="font-bold text-xs text-amber-400 border-b border-slate-800 pb-2 uppercase">
+                        <i class="fa-brands fa-whatsapp"></i> WhatsApp नंबर सेट करें
+                    </h4>
+                    <input type="text" id="adminWhatsappInput" placeholder="जैसे: 917070081629" class="w-full bg-slate-950 border border-slate-700 text-xs px-3 py-2 rounded-xl outline-none text-white font-bold">
+                    <button onclick="saveAdminWhatsapp()" class="w-full bg-emerald-600 text-white py-2 rounded-xl font-bold text-xs shadow">
+                        WhatsApp नंबर सेव करें
+                    </button>
+                </div>
+
+                <div class="bg-slate-900 p-3 rounded-xl space-y-2">
+                    <h4 class="font-bold text-xs text-amber-400 border-b border-slate-800 pb-2 uppercase">
+                        <i class="fa-solid fa-qrcode"></i> ऑनलाइन UPI ID सेट करें
+                    </h4>
+                    <input type="text" id="upiIdInput" placeholder="UPI ID..." class="w-full bg-slate-950 border border-slate-700 text-xs px-3 py-2 rounded-xl outline-none text-white font-bold">
+                    <button onclick="saveUpiId()" class="w-full bg-emerald-600 text-white py-2 rounded-xl font-bold text-xs shadow">
                         UPI सेव करें
                     </button>
                 </div>
 
-                <div class="glass-card p-5 rounded-3xl space-y-3">
-                    <h4 class="font-bold text-xs text-amber-400 flex items-center gap-2 border-b border-slate-800 pb-2 uppercase tracking-wider">
+                <div class="bg-slate-900 p-3 rounded-xl space-y-2">
+                    <h4 class="font-bold text-xs text-amber-400 border-b border-slate-800 pb-2 uppercase">
                         <i class="fa-solid fa-user-plus"></i> नया सदस्य जोड़ें
                     </h4>
                     <div class="grid grid-cols-3 gap-2">
-                        <input type="number" id="newMemberId" placeholder="ID (105)" class="bg-slate-900 border border-slate-700 text-xs px-3 py-3 rounded-xl outline-none text-white font-bold">
-                        <input type="text" id="newMemberNameEn" placeholder="English Name" class="col-span-2 bg-slate-900 border border-slate-700 text-xs px-3 py-3 rounded-xl outline-none text-white font-bold">
+                        <input type="number" id="newMemberId" placeholder="आईडी" class="bg-slate-950 border border-slate-700 text-xs px-2 py-2 rounded-xl outline-none text-white font-bold">
+                        <input type="text" id="newMemberNameEn" placeholder="English Name" class="col-span-2 bg-slate-950 border border-slate-700 text-xs px-3 py-2 rounded-xl outline-none text-white font-bold">
                     </div>
-                    <input type="text" id="newMemberNameHi" placeholder="हिंदी नाम (जैसे: एम डी अली)" class="w-full bg-slate-900 border border-slate-700 text-xs px-3 py-3 rounded-xl outline-none text-white font-bold">
-                    <button onclick="addNewMember()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-xs shadow transition">
-                        नया सदस्य जोड़ें
+                    <input type="text" id="newMemberNameHi" placeholder="हिंदी नाम..." class="w-full bg-slate-950 border border-slate-700 text-xs px-3 py-2 rounded-xl outline-none text-white font-bold">
+                    <button onclick="addNewMember()" class="w-full bg-emerald-600 text-white py-2 rounded-xl font-bold text-xs shadow">
+                        सदस्य जोड़ें
                     </button>
                 </div>
 
-                <div class="glass-card p-5 rounded-3xl space-y-3">
-                    <h4 class="font-bold text-xs text-amber-400 flex items-center gap-2 border-b border-slate-800 pb-2 uppercase tracking-wider">
-                        <i class="fa-solid fa-pen-to-square"></i> महीनेवार हिसाब अपडेट करें
+                <div class="bg-slate-900 p-3 rounded-xl space-y-2">
+                    <h4 class="font-bold text-xs text-amber-400 border-b border-slate-800 pb-2 uppercase">
+                        <i class="fa-solid fa-pen-to-square"></i> महीने का स्टेटस अपडेट करें
                     </h4>
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-400 block mb-1">सदस्य चुनें</label>
-                        <select id="editMemberSelect" onchange="loadMemberDataForEdit()" class="w-full bg-slate-900 border border-slate-700 text-xs px-3.5 py-3 rounded-xl outline-none text-white font-bold"></select>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-400 block mb-1">महीना चुनें</label>
-                        <select id="editMonthSelect" class="w-full bg-slate-900 border border-slate-700 text-xs px-3.5 py-3 rounded-xl outline-none text-white font-bold"></select>
+                    <div class="space-y-1.5">
+                        <select id="adminSelectMember" class="w-full bg-slate-950 border border-slate-700 text-xs px-3 py-2 rounded-xl outline-none text-white font-bold"></select>
+                        <select id="adminSelectMonth" class="w-full bg-slate-950 border border-slate-700 text-xs px-3 py-2 rounded-xl outline-none text-white font-bold"></select>
+                        <select id="adminPayMode" class="w-full bg-slate-950 border border-slate-700 text-xs px-3 py-2 rounded-xl outline-none text-amber-400 font-bold">
+                            <option value="Cash">💵 नकद (Cash)</option>
+                            <option value="Online">📱 ऑनलाइन (Online / UPI)</option>
+                        </select>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400 block mb-1">स्थिति</label>
-                            <select id="editPaidStatus" class="w-full bg-slate-900 border border-slate-700 text-xs px-3 py-3 rounded-xl outline-none text-white font-bold">
-                                <option value="true">Paid (जमा है)</option>
-                                <option value="false">Unpaid (बकाया)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400 block mb-1">रुपये (₹)</label>
-                            <input type="number" id="editAmountInput" value="250" class="w-full bg-slate-900 border border-slate-700 text-xs px-3.5 py-3 rounded-xl outline-none text-amber-400 font-bold">
-                        </div>
+                        <input type="number" id="adminEditAmt" value="250" class="bg-slate-950 border border-slate-700 text-xs px-2 py-2 rounded-xl outline-none text-amber-400 font-bold text-center" placeholder="अमाउंट">
+                        <input type="text" id="adminEditDate" class="bg-slate-950 border border-slate-700 text-xs px-2 py-2 rounded-xl outline-none text-slate-200 font-medium text-center" placeholder="तारीख">
                     </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-400 block mb-1">तारीख</label>
-                        <input type="text" id="editDateInput" class="w-full bg-slate-900 border border-slate-700 text-xs px-3.5 py-3 rounded-xl outline-none text-white font-medium">
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                        <button onclick="adminUpdateMonth(true)" class="bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-xs font-bold shadow">
+                            जमा करें (Paid)
+                        </button>
+                        <button onclick="adminUpdateMonth(false)" class="bg-rose-600 hover:bg-rose-700 text-white py-2 rounded-xl text-xs font-bold shadow">
+                            बकाया (Due)
+                        </button>
                     </div>
-                    <button onclick="saveAdminDirectEdit()" class="w-full gold-gradient text-slate-950 py-3 rounded-xl font-extrabold text-xs shadow-lg transition">
-                        हिसाब सेव करें
-                    </button>
                 </div>
             </div>
+
+            <button onclick="closeAdminModal()" class="w-full bg-slate-800 text-slate-300 py-2.5 rounded-xl font-bold text-xs">बंद करें</button>
         </div>
+    </div>
 
-    </main>
+    <!-- स्कैनर / QR कोड मोडल -->
+    <div id="scannerModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="glass-card rounded-2xl p-5 w-full max-w-sm text-center space-y-4 border border-slate-700 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                <h3 class="font-extrabold text-sm text-white"><i class="fa-solid fa-qrcode text-amber-400"></i> नूरी मस्जिद स्कैनर</h3>
+                <button onclick="closeScannerModal()" class="bg-slate-800 w-7 h-7 rounded-full flex items-center justify-center text-slate-300"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="bg-white p-4 rounded-2xl inline-block shadow-inner mx-auto">
+                <img id="qrImageDisplay" src="" alt="UPI QR" class="w-48 h-48 mx-auto object-contain">
+            </div>
+            <div>
+                <p class="text-[11px] text-slate-300 font-bold">UPI ID:</p>
+                <p id="displayUpiText" class="text-xs text-amber-400 font-extrabold mt-0.5 select-all"></p>
+                <p class="text-[10px] text-slate-400 mt-2">किसी भी UPI ऐप से स्कैन करके चंदा जमा करें।</p>
+            </div>
+            <button onclick="closeScannerModal()" class="w-full bg-slate-800 text-slate-300 py-2.5 rounded-xl font-bold text-xs">बंद करें</button>
+        </div>
+    </div>
 
-    <!-- Modal for Detailed Passbook & Receipt -->
-    <div id="ledgerModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto">
-        <div class="glass-card rounded-t-3xl sm:rounded-3xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto border border-slate-700 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-4">
+    <!-- सदस्य विवरण मोडल -->
+    <div id="ledgerModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto">
+        <div class="glass-card rounded-t-3xl sm:rounded-2xl p-5 w-full max-w-lg max-h-[90vh] overflow-y-auto border border-slate-700 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
                 <div>
-                    <h3 id="modalName" class="font-extrabold text-base text-white"></h3>
-                    <p class="text-xs text-slate-400">आईडी नंबर: <span id="modalId" class="font-bold text-amber-400"></span></p>
+                    <h3 id="modalName" class="font-extrabold text-sm text-white"></h3>
+                    <p class="text-[11px] text-slate-400">आईडी: <span id="modalId" class="font-bold text-amber-400"></span></p>
                 </div>
-                <button onclick="closeLedger()" class="bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center text-slate-300 transition"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeLedger()" class="bg-slate-800 w-7 h-7 rounded-full flex items-center justify-center text-slate-300"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <div class="bg-emerald-950/60 border border-emerald-800/60 p-3.5 rounded-2xl mb-4 flex items-center justify-between">
-                <div>
-                    <p class="text-[11px] font-bold text-emerald-300">WhatsApp डिजिटल पासबुक लिंक:</p>
-                    <p id="shareableLinkText" class="text-[10px] text-slate-400 truncate max-w-[230px] mt-0.5">लिंक तैयार है...</p>
-                </div>
-                <button onclick="shareOnWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3.5 py-2 rounded-xl font-bold flex items-center gap-1.5 shadow transition">
-                    <i class="fa-brands fa-whatsapp text-sm"></i> शेयर
+            <!-- चालू महीने का विवरण -->
+            <div class="space-y-2">
+                <p class="text-xs font-bold text-slate-300 uppercase">चालू महीने का विवरण:</p>
+                <div id="currentMonthContainer" class="space-y-2.5"></div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-800">
+                <button onclick="openAllHistoryModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/30 py-3 rounded-xl font-black text-xs shadow flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-file-invoice-dollar text-sm"></i> सभी महीनों का इतिहास देखें (All History PDF)
                 </button>
             </div>
 
-            <div class="space-y-3 mb-4">
-                <p class="text-xs font-bold text-slate-300 uppercase tracking-wider">महीनेवार हिसाब किताब:</p>
-                <div id="monthlyListContainer" class="space-y-2.5"></div>
+            <button onclick="closeLedger()" class="w-full bg-slate-800 text-slate-300 py-2.5 rounded-xl font-bold text-xs">बंद करें</button>
+        </div>
+    </div>
+
+    <!-- सिंगल मंथ PDF रसीद मोडल -->
+    <div id="singleMonthPdfModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-3 overflow-y-auto">
+        <div class="bg-white text-slate-900 rounded-2xl p-6 w-full max-w-md max-h-[92vh] overflow-y-auto shadow-2xl space-y-4" id="singleMonthReceiptCard">
+            <div class="text-center border-b-2 border-emerald-100 pb-3">
+                <p class="text-xs text-emerald-800 font-bold" style="font-family: serif;">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+                <h2 class="font-black text-lg text-emerald-950 tracking-wider mt-1">नूरी मस्जिद</h2>
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">मासिक चंदा भुगतान रसीद (Payment Receipt)</p>
             </div>
 
-            <div id="receiptCard" class="bg-white border-2 border-emerald-900/40 p-6 rounded-3xl mb-4 shadow-2xl text-slate-900">
-                <div class="text-center border-b border-emerald-900/20 pb-3 mb-3">
-                    <p class="text-[10px] text-emerald-800 font-bold">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
-                    <h3 class="font-black text-base tracking-wide">NOORI MASJID</h3>
-                    <p class="text-[9px] text-slate-500 uppercase tracking-widest font-bold">Official Cloud Contribution Receipt</p>
+            <div class="space-y-2 text-xs bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                <div class="flex justify-between"><span class="text-slate-500 font-bold">सदस्य नाम:</span> <strong id="recMemberName" class="text-slate-950">-</strong></div>
+                <div class="flex justify-between"><span class="text-slate-500 font-bold">सदस्य आईडी:</span> <strong id="recMemberId" class="text-amber-700">-</strong></div>
+                <div class="flex justify-between"><span class="text-slate-500 font-bold">भुगतान महीना:</span> <strong id="recMonthName" class="text-emerald-800">-</strong></div>
+                <div class="flex justify-between"><span class="text-slate-500 font-bold">जमा राशि:</span> <strong id="recAmount" class="text-emerald-700 text-sm font-black">-</strong></div>
+                <div class="flex justify-between"><span class="text-slate-500 font-bold">माध्यम:</span> <strong id="recMode" class="text-slate-800">-</strong></div>
+                <div class="flex justify-between"><span class="text-slate-500 font-bold">दिनांक:</span> <strong id="recDate" class="text-slate-800">-</strong></div>
+            </div>
+
+            <div class="text-center pt-1">
+                <p class="text-[9px] text-slate-400">यह कंप्यूटर जनित वैध रसीद है - नूरी मस्जिद कमेटी।</p>
+            </div>
+
+            <div class="space-y-2 pt-2">
+                <button onclick="window.print()" class="w-full gold-gradient text-slate-950 py-2.5 rounded-xl font-black text-xs shadow flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-file-pdf text-sm"></i> रसीद PDF डाउनलोड / प्रिंट करें
+                </button>
+                <button onclick="shareSingleReceiptOnWhatsApp()" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl font-bold text-xs shadow flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp पर डायरेक्ट भेजें
+                </button>
+                <button onclick="closeSingleReceiptModal()" class="w-full bg-slate-200 text-slate-800 py-2.5 rounded-xl font-bold text-xs">बंद करें</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- All History PDF Modal -->
+    <div id="allHistoryModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-3 overflow-y-auto">
+        <div class="bg-white text-slate-900 rounded-2xl p-6 w-full max-w-lg max-h-[92vh] overflow-y-auto shadow-2xl space-y-4" id="fullHistoryPdfCard">
+            <div class="text-center border-b-2 border-emerald-100 pb-3">
+                <p class="text-xs text-emerald-800 font-bold" style="font-family: serif;">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+                <h2 class="font-black text-lg text-emerald-950 tracking-wider mt-1">नूरी मस्जिद</h2>
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">सदस्य की सभी महीनों की चंदा पासबुक (All History Ledger)</p>
+            </div>
+
+            <div class="flex justify-between items-center text-xs bg-slate-100 p-3 rounded-xl border border-slate-200">
+                <div>
+                    <span class="text-[10px] text-slate-500 font-bold block">सदस्य नाम:</span>
+                    <strong id="pdfMemberName" class="text-slate-950 text-sm">-</strong>
                 </div>
-                <div class="space-y-2 text-xs">
-                    <p class="flex justify-between border-b pb-1"><b>अंतिम अपडेट:</b> <span id="receiptDate">-</span></p>
-                    <p class="flex justify-between border-b pb-1"><b>सदस्य का नाम:</b> <span id="receiptName">-</span></p>
-                    <p class="flex justify-between border-b pb-1"><b>पर्पस:</b> Masjid Monthly Chanda</p>
-                    <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-center mt-3">
-                        <p class="text-[10px] text-emerald-800 font-bold uppercase">Total Verified Amount</p>
-                        <h3 id="receiptAmount" class="text-xl font-black text-emerald-900">₹0</h3>
-                    </div>
-                </div>
-                <p class="text-[10px] text-center text-slate-500 mt-4 italic">JazakAllah Khair! May Allah bless your contribution.</p>
-                <div class="text-right mt-6">
-                    <p class="text-[10px] font-black text-slate-800">Authorized Cloud Signature</p>
+                <div class="text-right">
+                    <span class="text-[10px] text-slate-500 font-bold block">सदस्य आईडी:</span>
+                    <strong id="pdfMemberId" class="text-amber-700 text-sm">-</strong>
                 </div>
             </div>
 
-            <button onclick="downloadReceiptPDF()" class="w-full gold-gradient text-slate-950 py-3.5 rounded-2xl font-black text-xs shadow-lg mb-2 flex items-center justify-center gap-2 transition">
-                <i class="fa-solid fa-file-pdf"></i> रसीद डाउनलोड (PDF) करें
-            </button>
-            <button onclick="closeLedger()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 py-3 rounded-2xl font-bold text-xs transition">बंद करें</button>
+            <div class="space-y-1.5" id="allMonthsListContainer"></div>
+
+            <div class="pt-3 border-t border-slate-200 flex justify-between items-center text-xs">
+                <span class="font-bold text-slate-600">कुल जमा राशि (Total Paid):</span>
+                <span id="pdfTotalPaidSum" class="font-black text-emerald-700 text-base">₹0</span>
+            </div>
+
+            <div class="text-center pt-2">
+                <p class="text-[9px] text-slate-400">यह कंप्यूटर जनित आधिकारिक पासबुक रिपोर्ट है - नूरी मस्जिद कमेटी।</p>
+            </div>
+
+            <div class="flex gap-2 pt-2">
+                <button onclick="window.print()" class="w-full gold-gradient text-slate-950 py-2.5 rounded-xl font-black text-xs shadow flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-file-pdf text-sm"></i> PDF डाउनलोड / प्रिंट करें
+                </button>
+                <button onclick="closeAllHistoryModal()" class="bg-slate-200 text-slate-800 px-4 py-2.5 rounded-xl font-bold text-xs">बंद करें</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- स्क्रीनशॉट बड़ा देखने का मोडल -->
+    <div id="imageZoomModal" class="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-3">
+        <div class="relative max-w-md w-full text-center space-y-3">
+            <img id="zoomedImageTag" src="" alt="Zoomed Screenshot" class="max-h-[80vh] mx-auto rounded-xl border border-slate-700 object-contain">
+            <button onclick="document.getElementById('imageZoomModal').classList.add('hidden')" class="bg-slate-800 text-white px-5 py-2 rounded-xl font-bold text-xs">बंद करें</button>
         </div>
     </div>
 
     <script>
-        const firebaseConfig = {
-            databaseURL: "https://noori-masjid-default-rtdb.firebaseio.com/"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
-        setTimeout(() => {
-            let splash = document.getElementById('splash');
-            splash.style.opacity = '0';
-            setTimeout(() => splash.style.display = 'none', 500);
-        }, 800);
-
         const monthsOfYear = [
             { nameHi: "जनवरी", nameEn: "January" }, { nameHi: "फरवरी", nameEn: "February" },
             { nameHi: "मार्च", nameEn: "March" }, { nameHi: "अप्रैल", nameEn: "April" },
@@ -276,77 +358,85 @@
             { nameHi: "नवंबर", nameEn: "November" }, { nameHi: "दिसंबर", nameEn: "December" }
         ];
 
+        const currentMonthIndex = new Date().getMonth();
+
         let isAdmin = localStorage.getItem('nooriAdmin_vip') === 'true';
-        let upiId = "kaifjee2580@okaxis";
+        let upiId = localStorage.getItem('noori_upi') || "kaifjee2580@okaxis";
+        let adminWhatsapp = localStorage.getItem('noori_whatsapp') || "917070081629";
         
-        let members = [
-            { id: 101, name: "MD Salim (एम डी सलीम)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
-            { id: 102, name: "MD Haleem (एम डी हलीम)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
-            { id: 103, name: "MD Mustaqim (एम डी मुर्तकीम)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" },
-            { id: 104, name: "MD Akbar (एम डी अकबर)", months: Array(12).fill({ paid: false, amount: 0, date: "" }), lastUpdated: "नया खाता" }
+        let defaultMembers = [
+            { id: 101, nameEn: "MD Salim", name: "एम डी सलीम", months: Array(12).fill({ paid: false, amount: 250, mode: "Cash", date: "", time: "" }), lastUpdated: "नया खाता" },
+            { id: 102, nameEn: "MD Haleem", name: "एम डी हलीम", months: Array(12).fill({ paid: false, amount: 250, mode: "Cash", date: "", time: "" }), lastUpdated: "नया खाता" },
+            { id: 103, nameEn: "MD Mustaqim", name: "एम डी मुर्तकीम", months: Array(12).fill({ paid: false, amount: 250, mode: "Cash", date: "", time: "" }), lastUpdated: "नया खाता" },
+            { id: 104, nameEn: "MD Akbar", name: "एम डी अकबर", months: Array(12).fill({ paid: false, amount: 250, mode: "Cash", date: "", time: "" }), lastUpdated: "नया खाता" }
         ];
 
-        db.ref('nooriApp').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                if (data.members && data.members.length > 0) members = data.members;
-                if (data.upiId) upiId = data.upiId;
-            } else {
-                db.ref('nooriApp').set({ members: members, upiId: upiId });
-            }
-            document.getElementById('syncStatus').innerText = "लाइव सिंक";
-            document.getElementById('upiIdInput').value = upiId;
-            renderFullList();
-            if(isAdmin) populateAdminEditDropdown();
-            
-            const urlParams = new URLSearchParams(window.location.search);
-            const openId = urlParams.get('id');
-            if(openId && members.length > 0) openLedger(parseInt(openId));
-        }, (error) => {
-            document.getElementById('syncStatus').innerText = "ऑफलाइन मोड";
-            renderFullList();
-            if(isAdmin) populateAdminEditDropdown();
+        let members = JSON.parse(localStorage.getItem('noori_members')) || defaultMembers;
+        let pendingScreenshots = JSON.parse(localStorage.getItem('noori_screenshots')) || [];
+        members.forEach(m => { 
+            if(!m.nameEn) m.nameEn = m.name; 
+            m.months.forEach(mo => { if(!mo.mode) mo.mode = "Cash"; });
         });
 
-        populateMonthDropdowns();
-        function populateMonthDropdowns() {
-            let select = document.getElementById('editMonthSelect');
-            select.innerHTML = monthsOfYear.map((mo, idx) => `<option value="${idx}">${mo.nameHi}</option>`).join('');
+        function saveData() {
+            localStorage.setItem('noori_members', JSON.stringify(members));
+            localStorage.setItem('noori_upi', upiId);
+            localStorage.setItem('noori_whatsapp', adminWhatsapp);
+            localStorage.setItem('noori_screenshots', JSON.stringify(pendingScreenshots));
+            renderFullList();
+            populateAdminDropdowns();
+            renderAdminScreenshots();
         }
 
+        document.getElementById('upiIdInput').value = upiId;
+        document.getElementById('adminWhatsappInput').value = adminWhatsapp;
+        renderFullList();
+        updateAdminUI();
+        populateAdminDropdowns();
+        renderAdminScreenshots();
+        document.getElementById('adminEditDate').value = new Date().toLocaleDateString('hi-IN');
+
         function switchTab(tab) {
-            ['list', 'search', 'admin'].forEach(t => {
+            ['list', 'search'].forEach(t => {
                 document.getElementById('view' + t.charAt(0).toUpperCase() + t.slice(1)).classList.add('hidden');
-                document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).className = "font-bold text-xs text-slate-400 px-4 py-2 rounded-xl transition flex items-center gap-2";
+                document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).className = "font-bold text-xs text-slate-400 px-6 py-2 rounded-xl flex items-center gap-2";
             });
-
             document.getElementById('view' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
-            document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).className = "font-bold text-xs text-emerald-400 px-4 py-2 rounded-xl bg-emerald-950/50 border border-emerald-800/50 transition flex items-center gap-2";
+            document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).className = "font-bold text-xs text-emerald-400 px-6 py-2 rounded-xl bg-emerald-950/60 border border-emerald-800/50 flex items-center gap-2";
+        }
 
-            if(tab === 'admin' && isAdmin) populateAdminEditDropdown();
+        function openAdminModal() {
+            document.getElementById('adminModal').classList.remove('hidden');
+            updateAdminUI();
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
         }
 
         function updateAdminUI() {
             if(isAdmin) {
                 document.getElementById('adminLoginCard').classList.add('hidden');
                 document.getElementById('adminPanelContent').classList.remove('hidden');
-                populateAdminEditDropdown();
+                document.getElementById('adminBadgeText').innerText = "मोड: ग्रुप एडमिन (पूर्ण अधिकार)";
+                renderAdminScreenshots();
             } else {
                 document.getElementById('adminLoginCard').classList.remove('hidden');
                 document.getElementById('adminPanelContent').classList.add('hidden');
+                document.getElementById('adminBadgeText').innerText = "मोड: सामान्य सदस्य";
             }
         }
-        updateAdminUI();
 
         function verifyAdmin() {
             let pass = document.getElementById('adminPasswordInput').value;
-            if(pass === "1234") {
+            if(pass === "2580") {
                 isAdmin = true;
                 localStorage.setItem('nooriAdmin_vip', 'true');
                 document.getElementById('adminPasswordInput').value = "";
                 updateAdminUI();
+                alert("एडमिन लॉगिन सफल रहा!");
             } else {
-                alert("गलत पासवर्ड!");
+                alert("गलत पिन दर्ज किया गया!");
             }
         }
 
@@ -354,49 +444,23 @@
             isAdmin = false;
             localStorage.setItem('nooriAdmin_vip', 'false');
             updateAdminUI();
+            alert("एडमिन लॉगआउट हो गया है।");
         }
 
         function saveUpiId() {
             let val = document.getElementById('upiIdInput').value.trim();
             if(!val) { alert("कृपया वैध UPI ID डालें"); return; }
             upiId = val;
-            db.ref('nooriApp/upiId').set(upiId).then(() => alert("UPI ID सेव हो गई!"));
+            saveData();
+            alert("UPI ID सफलतापूर्वक सेव हो गई!");
         }
 
-        function populateAdminEditDropdown() {
-            let select = document.getElementById('editMemberSelect');
-            select.innerHTML = members.map(m => `<option value="${m.id}">#${m.id} - ${m.name}</option>`).join('');
-            loadMemberDataForEdit();
-        }
-
-        function loadMemberDataForEdit() {
-            let memberId = document.getElementById('editMemberSelect').value;
-            let m = members.find(x => x.id == memberId);
-            if(!m) return;
-            let monthIdx = document.getElementById('editMonthSelect').value;
-            let moData = m.months[monthIdx] || { paid: false, amount: 0, date: "" };
-            
-            document.getElementById('editPaidStatus').value = moData.paid ? "true" : "false";
-            document.getElementById('editAmountInput').value = moData.amount || 250;
-            document.getElementById('editDateInput').value = moData.date || (new Date().toLocaleDateString('hi-IN'));
-        }
-
-        document.getElementById('editMonthSelect').addEventListener('change', loadMemberDataForEdit);
-
-        function saveAdminDirectEdit() {
-            let memberId = document.getElementById('editMemberSelect').value;
-            let monthIdx = document.getElementById('editMonthSelect').value;
-            let isPaid = document.getElementById('editPaidStatus').value === "true";
-            let amount = document.getElementById('editAmountInput').value;
-            let dateStr = document.getElementById('editDateInput').value;
-
-            let m = members.find(x => x.id == memberId);
-            if(m) {
-                m.months[monthIdx] = { paid: isPaid, amount: isPaid ? amount : 0, date: isPaid ? dateStr : "" };
-                m.lastUpdated = dateStr || new Date().toLocaleDateString('hi-IN');
-                db.ref('nooriApp/members').set(members).then(() => alert("हिसाब अपडेट हो गया!"));
-                renderFullList();
-            }
+        function saveAdminWhatsapp() {
+            let val = document.getElementById('adminWhatsappInput').value.trim();
+            if(!val) { alert("कृपया वैध WhatsApp नंबर डालें"); return; }
+            adminWhatsapp = val;
+            saveData();
+            alert("WhatsApp नंबर सफलतापूर्वक अपडेट हो गया है!");
         }
 
         function addNewMember() {
@@ -404,73 +468,150 @@
             let nameEn = document.getElementById('newMemberNameEn').value.trim();
             let nameHi = document.getElementById('newMemberNameHi').value.trim();
 
-            if(!id || !nameEn || !nameHi) { alert("कृपया सभी फील्ड भरें"); return; }
+            if(!id || !nameEn || !nameHi) { alert("कृपया सभी जानकारी भरें"); return; }
             if(members.some(m => m.id === id)) { alert("यह आईडी पहले से मौजूद है"); return; }
 
-            members.unshift({
-                id: id, name: `${nameEn} (${nameHi})`,
-                months: Array(12).fill({ paid: false, amount: 0, date: "" }),
-                lastUpdated: "नया सदस्य"
-            });
+            let currentDateStr = new Date().toLocaleDateString('hi-IN');
+            let fullMonthsDetails = Array(12).fill(0).map(() => ({ paid: false, amount: 250, mode: "Cash", date: "", time: "" }));
 
-            db.ref('nooriApp/members').set(members).then(() => {
-                alert("नया सदस्य जुड़ गया!");
-                document.getElementById('newMemberId').value = "";
-                document.getElementById('newMemberNameEn').value = "";
-                document.getElementById('newMemberNameHi').value = "";
-                renderFullList();
-                populateAdminEditDropdown();
-            });
+            members.unshift({ id: id, nameEn: nameEn, name: nameHi, months: fullMonthsDetails, lastUpdated: currentDateStr });
+            saveData();
+            alert("नया सदस्य सफलतापूर्वक जुड़ गया है!");
+            document.getElementById('newMemberId').value = "";
+            document.getElementById('newMemberNameEn').value = "";
+            document.getElementById('newMemberNameHi').value = "";
+            closeAdminModal();
+            switchTab('list');
+        }
+
+        function populateAdminDropdowns() {
+            let memSelect = document.getElementById('adminSelectMember');
+            memSelect.innerHTML = members.map(m => `<option value="${m.id}">[ID: ${m.id}] ${m.name}</option>`).join('');
+            let monthSelect = document.getElementById('adminSelectMonth');
+            monthSelect.innerHTML = monthsOfYear.map((mo, idx) => `<option value="${idx}" ${idx === currentMonthIndex ? 'selected' : ''}>${mo.nameHi}</option>`).join('');
+        }
+
+        function adminUpdateMonth(isPaid) {
+            if(!isAdmin) { alert("अनधिकृत एक्सेस!"); return; }
+            let memId = parseInt(document.getElementById('adminSelectMember').value);
+            let monthIdx = parseInt(document.getElementById('adminSelectMonth').value);
+            let payMode = document.getElementById('adminPayMode').value;
+            let amt = parseInt(document.getElementById('adminEditAmt').value) || 250;
+            let dateStr = document.getElementById('adminEditDate').value.trim() || new Date().toLocaleDateString('hi-IN');
+            let timeStr = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+            let m = members.find(x => x.id === memId);
+            if(!m) return;
+
+            m.months[monthIdx] = { 
+                paid: isPaid, 
+                amount: isPaid ? amt : 250, 
+                mode: isPaid ? payMode : "Cash",
+                date: isPaid ? dateStr : "", 
+                time: isPaid ? timeStr : "" 
+            };
+            m.lastUpdated = new Date().toLocaleDateString('hi-IN');
+
+            saveData();
+            alert(`सफलतापूर्वक अपडेट किया गया: ${m.name} - ${monthsOfYear[monthIdx].nameHi}`);
+            
+            if(currentMemberId === memId) {
+                renderCurrentMonthOnlyView();
+            }
+        }
+
+        function renderAdminScreenshots() {
+            let container = document.getElementById('adminScreenshotsList');
+            if(!container) return;
+
+            if(pendingScreenshots.length === 0) {
+                container.innerHTML = `<p class="text-[10px] text-slate-400 text-center py-2">अभी कोई नया स्क्रीनशॉट नहीं आया है।</p>`;
+                return;
+            }
+
+            container.innerHTML = pendingScreenshots.map((item, index) => `
+                <div class="bg-slate-950 border border-slate-800 p-2 rounded-xl flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <img src="${item.imgData}" onclick="zoomImage('${item.imgData}')" class="w-10 h-10 object-cover rounded-lg border border-slate-700 cursor-pointer" alt="Proof">
+                        <div>
+                            <p class="text-[11px] font-bold text-white">${item.memberName} <span class="text-[9px] text-amber-400">(#${item.memberId})</span></p>
+                            <p class="text-[9px] text-emerald-400 font-semibold">${item.monthName} - ₹${item.amount}</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <button onclick="approveScreenshot(${index}, ${item.memberId}, ${item.monthIdx}, ${item.amount})" class="bg-emerald-600 text-white text-[9px] px-2 py-1 rounded font-bold">अपडेट</button>
+                        <button onclick="deleteScreenshot(${index})" class="bg-rose-600/20 text-rose-400 text-[9px] px-2 py-1 rounded font-bold">हटाएं</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function zoomImage(src) {
+            document.getElementById('zoomedImageTag').src = src;
+            document.getElementById('imageZoomModal').classList.remove('hidden');
+        }
+
+        function approveScreenshot(index, memId, monthIdx, amt) {
+            let m = members.find(x => x.id === memId);
+            if(m) {
+                let dateStr = new Date().toLocaleDateString('hi-IN');
+                let timeStr = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                m.months[monthIdx] = { paid: true, amount: amt, mode: "Online", date: dateStr, time: timeStr };
+                m.lastUpdated = dateStr;
+            }
+            pendingScreenshots.splice(index, 1);
+            saveData();
+            alert("चंदा 'Online Paid' अपडेट कर दिया गया है!");
+        }
+
+        function deleteScreenshot(index) {
+            pendingScreenshots.splice(index, 1);
+            saveData();
         }
 
         function renderFullList() {
-            let totalOverall = 0;
             let container = document.getElementById('fullMemberList');
-            document.getElementById('totalMembersCount').innerText = members.length;
-            
             container.innerHTML = members.map(m => {
-                let totalPaidAmt = m.months.reduce((sum, mo) => sum + (mo && mo.paid ? Number(mo.amount || 0) : 0), 0);
-                totalOverall += totalPaidAmt;
-                let paidCount = m.months.filter(mo => mo && mo.paid).length;
-                
+                let currentMoPaid = m.months[currentMonthIndex] && m.months[currentMonthIndex].paid;
                 return `
-                    <div onclick="openLedger(${m.id})" class="glass-card p-4 rounded-2xl flex justify-between items-center cursor-pointer hover:border-amber-400/50 transition shadow-lg">
+                    <div class="glass-card p-4 rounded-2xl flex justify-between items-center transition border border-slate-800">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 rounded-xl bg-slate-800 text-amber-400 flex items-center justify-center font-black text-xs border border-slate-700">#${m.id}</div>
                             <div>
                                 <h4 class="font-bold text-xs text-white">${m.name}</h4>
-                                <p class="text-[10px] text-slate-400 mt-0.5">अपडेट: ${m.lastUpdated || 'नया'}</p>
+                                <p class="text-[10px] text-slate-400 mt-0.5">चालू माह (${monthsOfYear[currentMonthIndex].nameHi}): <span class="${currentMoPaid ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}">${currentMoPaid ? 'जमा (Paid)' : 'बाकी (Due)'}</span></p>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <span class="text-sm font-black text-emerald-400 block">₹${totalPaidAmt}</span>
-                            <span class="text-[10px] text-slate-400 font-semibold">महीने: ${paidCount}/12</span>
-                        </div>
+                        <button onclick="openLedger(${m.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3.5 py-2 rounded-xl font-bold shadow flex items-center gap-1.5 transition">
+                            <i class="fa-solid fa-eye text-[11px]"></i> विवरण देखें
+                        </button>
                     </div>
                 `;
             }).join('');
-
-            document.getElementById('totalCollectionAmt').innerText = "₹" + totalOverall;
         }
 
         function handleSearch() {
-            let q = document.getElementById('searchInput').value.toLowerCase();
-            let res = members.filter(m => m.name.toLowerCase().includes(q) || m.id.toString().includes(q));
+            let q = document.getElementById('searchInput').value.toLowerCase().trim();
+            let res = members.filter(m => (m.nameEn && m.nameEn.toLowerCase().includes(q)) || m.name.toLowerCase().includes(q) || m.id.toString().includes(q));
             let container = document.getElementById('searchResults');
             
+            if(res.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">कोई सदस्य नहीं मिला।</p>`;
+                return;
+            }
+
             container.innerHTML = res.map(m => {
-                let totalPaidAmt = m.months.reduce((sum, mo) => sum + (mo && mo.paid ? Number(mo.amount || 0) : 0), 0);
-                let paidCount = m.months.filter(mo => mo && mo.paid).length;
+                let currentMoPaid = m.months[currentMonthIndex] && m.months[currentMonthIndex].paid;
                 return `
-                    <div onclick="openLedger(${m.id})" class="glass-card p-4 rounded-2xl flex justify-between items-center cursor-pointer hover:border-amber-400/50 transition">
+                    <div class="glass-card p-4 rounded-2xl flex justify-between items-center border border-slate-800">
                         <div>
-                            <span class="text-[9px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-bold border border-amber-500/20">ID: ${m.id}</span>
+                            <span class="text-[9px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-bold">आईडी: ${m.id}</span>
                             <h4 class="font-bold text-xs text-white mt-1">${m.name}</h4>
+                            <p class="text-[10px] text-slate-400 mt-0.5">चालू माह स्थिति: <span class="${currentMoPaid ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold'}">${currentMoPaid ? 'जमा (Paid)' : 'बाकी (Due)'}</span></p>
                         </div>
-                        <div class="text-right">
-                            <span class="text-sm font-black text-emerald-400">₹${totalPaidAmt}</span>
-                            <span class="text-[10px] text-slate-400 block">महीने: ${paidCount}/12</span>
-                        </div>
+                        <button onclick="openLedger(${m.id})" class="bg-emerald-600 text-white text-xs px-3.5 py-2 rounded-xl font-bold shadow flex items-center gap-1.5">
+                            <i class="fa-solid fa-eye text-[11px]"></i> विवरण देखें
+                        </button>
                     </div>
                 `;
             }).join('');
@@ -484,66 +625,204 @@
             if(!m) return;
             document.getElementById('modalName').innerText = m.name;
             document.getElementById('modalId').innerText = m.id;
-            
-            document.getElementById('receiptName').innerText = m.name;
-            document.getElementById('receiptDate').innerText = m.lastUpdated || "-";
 
-            let shareUrl = window.location.origin + window.location.pathname + "?id=" + m.id;
-            document.getElementById('shareableLinkText').innerText = shareUrl;
-
-            renderMonthlyBreakdown();
+            renderCurrentMonthOnlyView();
             document.getElementById('ledgerModal').classList.remove('hidden');
         }
 
-        function shareOnWhatsApp() {
+        function renderCurrentMonthOnlyView() {
             let m = members.find(x => x.id === currentMemberId);
-            let shareUrl = window.location.origin + window.location.pathname + "?id=" + m.id;
-            let totalPaidAmt = m.months.reduce((sum, mo) => sum + (mo && mo.paid ? Number(mo.amount || 0) : 0), 0);
+            if(!m) return;
+            let container = document.getElementById('currentMonthContainer');
+            let moInfo = monthsOfYear[currentMonthIndex];
+            let moData = m.months[currentMonthIndex] || { paid: false, amount: 250, mode: "Cash", date: "", time: "" };
             
-            let message = `अस्सलामु अलैकुम ${m.name},\n\nनूरी मस्जिद VIP पोर्टल पर आपका कुल जमा हिसाब *₹${totalPaidAmt}* है।\n\nअपनी पूरी साल भर की डिजिटल पासबुक और रसीद देखने के लिए नीचे दिए गए लिंक पर क्लिक करें:\n${shareUrl}`;
+            let statusText = moData.paid ? `₹${moData.amount} जमा (${moData.mode === 'Online' ? 'ऑनलाइन' : 'नकद'})` : `बाकी (Due)`;
+            let statusColor = moData.paid ? "text-emerald-400 bg-emerald-950/60 border border-emerald-800/50 px-2 py-0.5 rounded text-[10px] font-bold" : "text-rose-400 bg-rose-950/60 border border-rose-800/50 px-2 py-0.5 rounded text-[10px] font-bold";
+            
+            let actionsHtml = "";
+            if(moData.paid) {
+                actionsHtml = `
+                    <div class="mt-2.5 pt-2.5 border-t border-slate-800 grid grid-cols-2 gap-2">
+                        <button onclick="openSingleMonthPdf(${currentMonthIndex})" class="gold-gradient text-slate-950 py-2 rounded-xl font-extrabold text-[10px] shadow flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-file-pdf"></i> PDF रसीद देखें
+                        </button>
+                        <button onclick="shareSingleReceiptWhatsApp(${currentMonthIndex})" class="bg-emerald-600 text-white py-2 rounded-xl font-bold text-[10px] shadow flex items-center justify-center gap-1">
+                            <i class="fa-brands fa-whatsapp"></i> WhatsApp भेजें
+                        </button>
+                    </div>
+                `;
+            } else {
+                actionsHtml = `
+                    <div class="mt-2.5 pt-2.5 border-t border-slate-800 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] text-slate-400 font-bold">अमाउंट: ₹${moData.amount || 250}</span>
+                            <a href="javascript:void(0)" onclick="payOnline(${currentMonthIndex}, '${moInfo.nameEn}', ${moData.amount || 250})" class="gold-gradient text-slate-950 text-[10px] py-1.5 px-3 rounded-lg font-extrabold shadow flex items-center gap-1">
+                                <i class="fa-solid fa-qrcode"></i> ऑनलाइन भुगतान (UPI)
+                            </a>
+                        </div>
+                        
+                        <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl space-y-2">
+                            <label class="text-[10px] text-amber-400 font-bold block"><i class="fa-solid fa-image"></i> पेमेंट स्क्रीनशॉट अपलोड करें:</label>
+                            <input type="file" id="screenshotFileInput" accept="image/*" class="w-full text-[10px] text-slate-400 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 cursor-pointer">
+                            <button onclick="uploadPaymentProof(${currentMemberId}, ${currentMonthIndex}, ${moData.amount || 250})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] py-2 rounded-lg font-bold flex items-center justify-center gap-1.5 shadow">
+                                <i class="fa-solid fa-upload text-xs"></i> स्क्रीनशॉट एडमिन को भेजें & WhatsApp खोलें
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="border-amber-500/60 bg-slate-900 p-3.5 rounded-xl border shadow-md">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-xs text-slate-200">${moInfo.nameHi} (चालू महीना)</span>
+                        <span class="${statusColor}">${statusText}</span>
+                    </div>
+                    ${actionsHtml}
+                </div>
+            `;
+        }
+
+        let selectedReceiptMonthIdx = currentMonthIndex;
+
+        function openSingleMonthPdf(monthIdx) {
+            selectedReceiptMonthIdx = monthIdx;
+            let m = members.find(x => x.id === currentMemberId);
+            let moData = m.months[monthIdx];
+            let moInfo = monthsOfYear[monthIdx];
+
+            document.getElementById('recMemberName').innerText = m.name;
+            document.getElementById('recMemberId').innerText = "#" + m.id;
+            document.getElementById('recMonthName').innerText = moInfo.nameHi + " (" + moInfo.nameEn + ")";
+            document.getElementById('recAmount').innerText = "₹" + (moData.amount || 250);
+            document.getElementById('recMode').innerText = moData.mode === 'Online' ? 'ऑनलाइन (Online/UPI)' : 'नकद (Cash)';
+            document.getElementById('recDate').innerText = moData.date || new Date().toLocaleDateString('hi-IN');
+
+            document.getElementById('ledgerModal').classList.add('hidden');
+            document.getElementById('singleMonthPdfModal').classList.remove('hidden');
+        }
+
+        function closeSingleReceiptModal() {
+            document.getElementById('singleMonthPdfModal').classList.add('hidden');
+            document.getElementById('ledgerModal').classList.remove('hidden');
+        }
+
+        function shareSingleReceiptWhatsApp(monthIdx) {
+            let m = members.find(x => x.id === currentMemberId);
+            let moData = m.months[monthIdx];
+            let moInfo = monthsOfYear[monthIdx];
+            let modeText = moData.mode === 'Online' ? 'ऑनलाइन (Online/UPI)' : 'नकद (Cash)';
+
+            let message = `*नूरी मस्जिद - चंदा भुगतान रसीद*\n\nअस्सलामु अलैकुम,\nचंदे का भुगतान सफल रहा है।\n\n👤 सदस्य नाम: *${m.name}*\n🆔 सदस्य आईडी: *#${m.id}*\n📅 महीना: *${moInfo.nameHi}*\n💰 राशि: *₹${moData.amount || 250}*\n💳 माध्यम: *${modeText}*\n✅ स्थिति: *जमा हो गया (Paid)*\n🗓️ दिनांक: ${moData.date || new Date().toLocaleDateString('hi-IN')}\n\n*नूरी मस्जिद कमेटी*`;
+            
             window.open(`https://api.whatsapp.com/send?text=` + encodeURIComponent(message), '_blank');
         }
 
-        function renderMonthlyBreakdown() {
+        function shareSingleReceiptOnWhatsApp() {
+            shareSingleReceiptWhatsApp(selectedReceiptMonthIdx);
+        }
+
+        function uploadPaymentProof(memId, monthIdx, amt) {
+            let fileInput = document.getElementById('screenshotFileInput');
+            let m = members.find(x => x.id === memId);
+            let moInfo = monthsOfYear[monthIdx];
+
+            if(!fileInput.files || fileInput.files.length === 0) {
+                alert("कृपया पहले पेमेंट का स्क्रीनशॉट फोटो चुनें!");
+                return;
+            }
+
+            let file = fileInput.files[0];
+            let reader = new FileReader();
+
+            reader.onload = function(e) {
+                let base64Image = e.target.result;
+                
+                pendingScreenshots.unshift({
+                    memberId: m.id,
+                    memberName: m.name,
+                    monthIdx: monthIdx,
+                    monthName: moInfo.nameHi,
+                    amount: amt,
+                    imgData: base64Image,
+                    date: new Date().toLocaleDateString('hi-IN') + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                });
+
+                saveData();
+
+                let text = `अस्सलामु अलैकुम एडमिन साहब,\n\nमैंने ${moInfo.nameHi} महीने का चंदा (₹${amt}) ऑनलाइन भेज दिया है और ऐप पर स्क्रीनशॉट अपलोड कर दिया है।\n\nसदस्य नाम: *${m.name}*\nसदस्य आईडी: *#${m.id}*\nमहीना: *${moInfo.nameHi}*\n\nकृपया चेक करके मेरा चंदा 'Online Paid' अपडेट कर दें। शुक्रिया!`;
+                
+                window.open(`https://api.whatsapp.com/send?phone=${adminWhatsapp}&text=` + encodeURIComponent(text), '_blank');
+                alert("स्क्रीनशॉट सफलतापूर्वक एडमिन पैनल में भेज दिया गया है!");
+                closeLedger();
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function openScannerModal() {
+            let qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=` + encodeURIComponent(`upi://pay?pa=${upiId}&pn=Noori%20Masjid&cu=INR`);
+            document.getElementById('qrImageDisplay').src = qrApiUrl;
+            document.getElementById('displayUpiText').innerText = upiId;
+            document.getElementById('scannerModal').classList.remove('hidden');
+        }
+
+        function closeScannerModal() {
+            document.getElementById('scannerModal').classList.add('hidden');
+        }
+
+        function openAllHistoryModal() {
             let m = members.find(x => x.id === currentMemberId);
-            let totalAmt = m.months.reduce((sum, mo) => sum + (mo && mo.paid ? Number(mo.amount || 0) : 0), 0);
-            document.getElementById('receiptAmount').innerText = "₹" + totalAmt;
+            if(!m) return;
 
-            let container = document.getElementById('monthlyListContainer');
-            container.innerHTML = monthsOfYear.map((moInfo, idx) => {
-                let moData = m.months[idx] || { paid: false, amount: 0, date: "" };
-                let statusText = moData.paid ? `₹${moData.amount} जमा (Paid)` : `बकाया (Due)`;
-                let statusColor = moData.paid ? "text-emerald-400 font-bold bg-emerald-950/60 border border-emerald-800/50 px-2.5 py-1 rounded-lg" : "text-rose-400 font-bold bg-rose-950/60 border border-rose-800/50 px-2.5 py-1 rounded-lg";
+            document.getElementById('pdfMemberName').innerText = m.name;
+            document.getElementById('pdfMemberId').innerText = "#" + m.id;
 
-                let payButtonHTML = "";
-                if(!moData.paid) {
-                    let payUrl = `upi://pay?pa=${upiId}&pn=Noori%20Masjid&am=250&cu=INR&tn=Masjid%20Chanda%20-${moInfo.nameEn}`;
-                    payButtonHTML = `
-                        <a href="${payUrl}" class="mt-2.5 w-full gold-gradient text-slate-950 text-[11px] py-2.5 px-3 rounded-xl font-extrabold flex items-center justify-center gap-2 shadow-lg transition">
-                            <i class="fa-solid fa-qrcode text-sm"></i> Pay ₹250 Online (GPay/PhonePe)
-                        </a>
-                    `;
-                } else {
-                    payButtonHTML = `<p class="text-[10px] text-slate-400 mt-1.5 font-medium">तारीख: ${moData.date}</p>`;
-                }
+            let container = document.getElementById('allMonthsListContainer');
+            let totalPaidSum = 0;
+
+            container.innerHTML = m.months.map((mo, idx) => {
+                let isPaid = mo && mo.paid;
+                if(isPaid) totalPaidSum += Number(mo.amount || 250);
+
+                let modeLabel = isPaid ? (mo.mode === 'Online' ? '<span class="text-[9px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold">ऑनलाइन</span>' : '<span class="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold">नकद (Cash)</span>') : '';
+
+                let statusBadge = isPaid ? 
+                    `<div class="text-right"><span class="text-emerald-700 font-black text-xs bg-emerald-50 px-2 py-1 rounded border border-emerald-200 inline-block">₹${mo.amount || 250} जमा</span><br>${modeLabel}</div>` : 
+                    `<span class="text-rose-600 font-bold text-xs bg-rose-50 px-2 py-1 rounded border border-rose-100">बाकी (Due)</span>`;
+
+                let dateInfo = isPaid && mo.date ? `<br><span class="text-[9px] text-slate-500">तारीख: ${mo.date}</span>` : '';
 
                 return `
-                    <div class="bg-slate-900/80 p-3.5 rounded-2xl border border-slate-800 shadow-inner flex flex-col justify-between">
-                        <div class="flex justify-between items-center text-xs">
-                            <span class="font-bold text-slate-200">${moInfo.nameHi}:</span>
-                            <span class="${statusColor} text-[11px]">${statusText}</span>
+                    <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+                        <div>
+                            <span class="font-bold text-slate-800">${idx + 1}. ${monthsOfYear[idx].nameHi} (${monthsOfYear[idx].nameEn})</span>
+                            ${dateInfo}
                         </div>
-                        ${payButtonHTML}
+                        <div>${statusBadge}</div>
                     </div>
                 `;
             }).join('');
+
+            document.getElementById('pdfTotalPaidSum').innerText = "₹" + totalPaidSum;
+            document.getElementById('ledgerModal').classList.add('hidden');
+            document.getElementById('allHistoryModal').classList.remove('hidden');
         }
 
-        function downloadReceiptPDF() { window.print(); }
+        function closeAllHistoryModal() {
+            document.getElementById('allHistoryModal').classList.add('hidden');
+            document.getElementById('ledgerModal').classList.remove('hidden');
+        }
+
+        function payOnline(monthIdx, monthName, amt) {
+            let m = members.find(x => x.id === currentMemberId);
+            let payUrl = `upi://pay?pa=${upiId}&pn=Noori%20Masjid&am=${amt}&cu=INR&tn=Masjid%20Chanda%20-${monthName}%20ID-${m.id}`;
+            window.location.href = payUrl;
+        }
 
         function closeLedger() {
             document.getElementById('ledgerModal').classList.add('hidden');
-            window.history.replaceState({}, document.title, window.location.pathname);
         }
     </script>
 </body>
