@@ -11,18 +11,17 @@
         .card { background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px; }
         .form-group { margin-bottom: 12px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        .phone-box { display: flex; gap: 8px; }
+        .country-code { width: 75px; text-align: center; font-weight: bold; background: #eee; }
         input, button { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; font-size: 15px; }
         button { background: #27ae60; color: #fff; border: none; cursor: pointer; font-weight: bold; margin-top: 5px; }
         button:hover { background: #219653; }
         .btn-primary { background: #2980b9; }
         .btn-primary:hover { background: #1f618d; }
-        .btn-danger { background: #c0392b; margin-top: 15px; }
-        .btn-danger:hover { background: #962d22; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background: #e8f4f8; color: #2c3e50; }
-        #app-section, #otp-section { display: none; }
-        #recaptcha-container { margin-bottom: 10px; }
+        #app-section { display: none; }
     </style>
 </head>
 <body>
@@ -30,20 +29,24 @@
 <div class="container">
     <h2>🏡 Digital Village Portal</h2>
 
-    <!-- 1. OTP LOGIN SECTION -->
+    <!-- 1. PHONE & OTP LOGIN SECTION -->
     <div id="login-section" class="card">
-        <h3>Mobile OTP Login</h3>
+        <h3 style="margin-top:0;">Mobile OTP Login</h3>
         <div class="form-group">
-            <label>Mobile Number (+91 lagayein)</label>
-            <input type="text" id="phone-number" value="+91">
+            <label>Mobile Number</label>
+            <div class="phone-box">
+                <input type="text" id="country-code" class="country-code" value="+91" readonly>
+                <input type="tel" id="phone-number" placeholder="10-ank ka mobile number" maxlength="10">
+            </div>
         </div>
+        <!-- Invisible container for Firebase Auth (No ReCaptcha UI needed) -->
         <div id="recaptcha-container"></div>
-        <button class="btn-primary" onclick="sendOTP()">Send OTP</button>
+        <button class="btn-primary" onclick="sendOTP()">OTP Bhejein</button>
 
         <div id="otp-verify-box" style="display:none; margin-top: 15px;">
             <div class="form-group">
-                <label>Enter 6-digit OTP</label>
-                <input type="text" id="otp-code" placeholder="OTP daalein">
+                <label>6-digit OTP Daalein</label>
+                <input type="text" id="otp-code" placeholder="OTP yahan likhein" maxlength="6">
             </div>
             <button onclick="verifyOTP()">Verify OTP & Login</button>
         </div>
@@ -85,8 +88,7 @@
                 </table>
             </div>
         </div>
-
-        <button class="btn-danger" onclick="logoutUser()">Logout (Baahar Jaayein)</button>
+        <button style="background: #c0392b;" onclick="logoutUser()">Logout</button>
     </div>
 </div>
 
@@ -111,7 +113,6 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    // Global variables for window access
     window.auth = auth;
     window.db = db;
     window.RecaptchaVerifier = RecaptchaVerifier;
@@ -122,7 +123,13 @@
     window.set = set;
     window.onValue = onValue;
 
-    // Check login state
+    // Invisible Recaptcha setup (koi robot box nahi dikhega)
+    window.onload = function() {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+            'size': 'invisible'
+        });
+    };
+
     auth.onAuthStateChanged((user) => {
         if (user) {
             document.getElementById('login-section').style.display = 'none';
@@ -136,23 +143,19 @@
 </script>
 
 <script>
-    // Setup reCAPTCHA
-    window.onload = function() {
-        setTimeout(() => {
-            if(window.auth && !window.recaptchaVerifier) {
-                window.recaptchaVerifier = new window.RecaptchaVerifier(window.auth, 'recaptcha-container', {
-                    'size': 'normal'
-                });
-                window.recaptchaVerifier.render();
-            }
-        }, 1000);
-    };
-
     window.sendOTP = function() {
-        const phoneNumber = document.getElementById('phone-number').value;
+        const countryCode = document.getElementById('country-code').value;
+        const userPhone = document.getElementById('phone-number').value;
+
+        if(!userPhone || userPhone.length < 10) {
+            alert("Kripya sahi 10-ank ka mobile number daalein!");
+            return;
+        }
+
+        const fullPhoneNumber = countryCode + userPhone;
         const appVerifier = window.recaptchaVerifier;
 
-        window.signInWithPhoneNumber(window.auth, phoneNumber, appVerifier)
+        window.signInWithPhoneNumber(window.auth, fullPhoneNumber, appVerifier)
             .then((confirmationResult) => {
                 window.confirmationResult = confirmationResult;
                 document.getElementById('otp-verify-box').style.display = 'block';
@@ -164,6 +167,11 @@
 
     window.verifyOTP = function() {
         const code = document.getElementById('otp-code').value;
+        if(!code || code.length < 6) {
+            alert("Kripya pura 6-ank ka OTP daalein!");
+            return;
+        }
+
         window.confirmationResult.confirm(code).then((result) => {
             alert("Login safal raha!");
         }).catch((error) => {
