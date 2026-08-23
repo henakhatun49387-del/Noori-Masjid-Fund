@@ -1,10 +1,214 @@
-const firebaseConfig = {
-  apiKey: "AIzaSyAh... (आपकी असली की)",
-  authDomain: "monthly-salary-2a1bd.firebaseapp.com",
-  databaseURL: "https://monthly-salary-2a1bd-default-rtdb.firebaseio.com",
-  projectId: "monthly-salary-2a1bd",
-  storageBucket: "monthly-salary-2a1bd.appspot.com",
-  messagingSenderId: "766706380489",
-  appId: "1:766706380489:web:0de4f388c2719c0bb3a718",
-  measurementId: "G-YSDBJSW02X"
-};
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Village Portal</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f9; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, button { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
+        button { background: #3498db; color: #fff; border: none; cursor: pointer; margin-top: 10px; font-weight: bold; }
+        button:hover { background: #2980b9; }
+        .hidden { display: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 14px; }
+        th { background: #f2f2f2; }
+        .logout-btn { background: #e74c3c; width: auto; padding: 5px 15px; float: right; font-size: 14px; margin-top: 0; }
+        .logout-btn:hover { background: #c0392b; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Digital Village Portal</h2>
+
+    <!-- Login Section -->
+    <div id="login-section">
+        <h3>Mobile OTP Login</h3>
+        <div class="form-group">
+            <label>Mobile Number (+91 lagayein)</label>
+            <input type="text" id="phone-number" value="+91" placeholder="+91XXXXXXXXXX">
+        </div>
+        <button id="send-otp-btn" onclick="sendOTP()">Send OTP</button>
+        
+        <div id="otp-group" class="hidden" style="margin-top: 15px;">
+            <div class="form-group">
+                <label>Enter OTP</label>
+                <input type="text" id="otp-code" placeholder="6-digit OTP">
+            </div>
+            <button onclick="verifyOTP()">Verify OTP & Login</button>
+        </div>
+        <div id="recaptcha-container"></div>
+    </div>
+
+    <!-- Dashboard Section (Hidden until login) -->
+    <div id="dashboard-section" class="hidden">
+        <button class="logout-btn" onclick="logout()">Logout</button>
+        <h3>Gaon Ka Data Entry Form</h3>
+        <div class="form-group">
+            <label>Resident Name (निवासी का नाम)</label>
+            <input type="text" id="res-name" placeholder="Naam likhein">
+        </div>
+        <div class="form-group">
+            <label>House No. / Ward No. (मकान/वार्ड संख्या)</label>
+            <input type="text" id="res-ward" placeholder="Ward number">
+        </div>
+        <div class="form-group">
+            <label>Work / Details (विवरण)</label>
+            <input type="text" id="res-details" placeholder="Jaise: Kisan / Majدور">
+        </div>
+        <button onclick="saveData()">Save Entry</button>
+
+        <h3 style="margin-top: 30px;">Gaon Ki History & List</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Naam</th>
+                    <th>Ward</th>
+                    <th>Vivaran</th>
+                </tr>
+            </thead>
+            <tbody id="data-table-body">
+                <tr><td colspan="3" style="text-align: center;">Data load ho raha hai...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Firebase SDKs -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    // Yahan apna asli firebaseConfig dalein jo aapko mila hai
+    const firebaseConfig = {
+        apiKey: "AIzaSyAh...
+        authDomain: "monthly-salary-2a1bd.firebaseapp.com",
+        databaseURL: "https://monthly-salary-2a1bd-default-rtdb.firebaseio.com",
+        projectId: "monthly-salary-2a1bd",
+        storageBucket: "monthly-salary-2a1bd.appspot.com",
+        messagingSenderId: "766706380489",
+        appId: "1:766706380489:web:0de4f388c2719c0bb3a718",
+        measurementId: "G-YSDBJSW02X"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    window.auth = auth;
+    window.db = db;
+    window.RecaptchaVerifier = RecaptchaVerifier;
+    window.signInWithPhoneNumber = signInWithPhoneNumber;
+    window.push = push;
+    window.ref = ref;
+    window.set = set;
+    window.onValue = onValue;
+
+    // Check login state
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+            loadVillageData();
+        } else {
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('dashboard-section').classList.add('hidden');
+        }
+    });
+</script>
+
+<script>
+    // Send OTP function
+    window.sendOTP = function() {
+        const phoneNumber = document.getElementById('phone-number').value;
+        if(!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new window.RecaptchaVerifier(window.auth, 'recaptcha-container', {
+                'size': 'invisible'
+            });
+        }
+        const appVerifier = window.recaptchaVerifier;
+        window.signInWithPhoneNumber(window.auth, phoneNumber, appVerifier)
+            .then((confirmationResult) => {
+                window.confirmationResult = confirmationResult;
+                alert("OTP bhej diya gaya hai!");
+                document.getElementById('otp-group').classList.remove('hidden');
+            }).catch((error) => {
+                console.error(error);
+                alert("OTP bhejne mein error aaya: " + error.message);
+            });
+    }
+
+    // Verify OTP function
+    window.verifyOTP = function() {
+        const otpCode = document.getElementById('otp-code').value;
+        window.confirmationResult.confirm(otpCode).then((result) => {
+            alert("Login Safal Rha!");
+        }).catch((error) => {
+            alert("Galat OTP! Dobara koshish karein.");
+        });
+    }
+
+    // Save Data to Realtime Database
+    window.saveData = function() {
+        const name = document.getElementById('res-name').value;
+        const ward = document.getElementById('res-ward').value;
+        const details = document.getElementById('res-details').value;
+
+        if(!name || !ward) {
+            alert("Kripya naam aur ward bharein!");
+            return;
+        }
+
+        const dbRef = window.ref(window.db, 'village_records');
+        const newRef = window.push(dbRef);
+        window.set(newRef, {
+            name: name,
+            ward: ward,
+            details: details,
+            timestamp: Date.now()
+        }).then(() => {
+            alert("Data safalpurvak save ho gaya!");
+            document.getElementById('res-name').value = '';
+            document.getElementById('res-ward').value = '';
+            document.getElementById('res-details').value = '';
+        }).catch((error) => {
+            alert("Save karne mein error: " + error.message);
+        });
+    }
+
+    // Load Village History/Data
+    function loadVillageData() {
+        const dbRef = window.ref(window.db, 'village_records');
+        window.onValue(dbRef, (snapshot) => {
+            const tbody = document.getElementById('data-table-body');
+            tbody.innerHTML = '';
+            const data = snapshot.val();
+            if(data) {
+                Object.values(data).forEach(record => {
+                    const row = `<tr>
+                        <td>${record.name}</td>
+                        <td>${record.ward}</td>
+                        <td>${record.details || '-'}</td>
+                    </tr>`;
+                    tbody.innerHTML += row;
+                });
+            } else {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center;">Abhi koi datauplabdh nahi hai.</td></tr>`;
+            }
+        });
+    }
+
+    // Logout
+    window.logout = function() {
+        window.auth.signOut();
+    }
+</script>
+
+</body>
+</html>
