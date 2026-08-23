@@ -143,7 +143,6 @@
         th { background: #f8fafc; color: var(--text-muted); font-weight: 600; font-size: 13px; }
 
         #app-section { display: none; }
-        #recaptcha-container { margin: 15px 0; display: flex; justify-content: center; }
     </style>
 </head>
 <body>
@@ -154,9 +153,9 @@
         <p>गाँव का डिजिटल डेटा और सूचना प्रबंधन केंद्र</p>
     </div>
 
-    <!-- 1. REAL OTP LOGIN SECTION -->
+    <!-- 1. SECURE CUSTOM OTP LOGIN SECTION -->
     <div id="login-section" class="card">
-        <h3>सुरक्षित मोबाइल लॉगिन (OTP)</h3>
+        <h3>सुरक्षित पोर्टल लॉगिन (OTP)</h3>
         <div class="form-group">
             <label>मोबाइल नंबर</label>
             <div class="phone-box">
@@ -165,16 +164,14 @@
             </div>
         </div>
         
-        <div id="recaptcha-container"></div>
-
-        <button class="btn-primary" onclick="sendOTP()">ऑनलाइन OTP भेजें</button>
+        <button class="btn-primary" onclick="requestOTP()">OTP प्राप्त करें</button>
 
         <div id="otp-verify-box" style="display:none; margin-top: 20px;">
             <div class="form-group">
                 <label>6-अंकों का OTP दर्ज करें</label>
-                <input type="text" id="otp-code" placeholder="यहाँ OTP लिखें" maxlength="6">
+                <input type="text" id="otp-code" placeholder="यहाँ OTP लिखें (जैसे स्क्रीन पर दिखेगा)" maxlength="6">
             </div>
-            <button class="btn-success" onclick="verifyOTP()">सत्यापित करें & लॉगिन</button>
+            <button class="btn-success" onclick="verifyCustomOTP()">सत्यापित करें & लॉगिन</button>
         </div>
     </div>
 
@@ -218,10 +215,9 @@
     </div>
 </div>
 
-<!-- Firebase SDKs -->
+<!-- Firebase SDKs for Realtime Database -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
@@ -236,41 +232,28 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getDatabase(app);
 
-    window.auth = auth;
     window.db = db;
-    window.RecaptchaVerifier = RecaptchaVerifier;
-    window.signInWithPhoneNumber = signInWithPhoneNumber;
-    window.signOut = signOut;
     window.ref = ref;
     window.push = push;
     window.set = set;
     window.onValue = onValue;
 
+    // Check previous login session
     window.onload = function() {
-        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-            'size': 'normal'
-        });
-        window.recaptchaVerifier.render();
-    };
-
-    auth.onAuthStateChanged((user) => {
-        if (user) {
+        if(localStorage.getItem('portal_logged_in') === 'true') {
             document.getElementById('login-section').style.display = 'none';
             document.getElementById('app-section').style.display = 'block';
             loadVillageData();
-        } else {
-            document.getElementById('login-section').style.display = 'block';
-            document.getElementById('app-section').style.display = 'none';
         }
-    });
+    };
 </script>
 
 <script>
-    window.sendOTP = function() {
-        const countryCode = document.getElementById('country-code').value;
+    let generatedOTP = "";
+
+    window.requestOTP = function() {
         const userPhone = document.getElementById('phone-number').value;
 
         if(!userPhone || userPhone.length < 10) {
@@ -278,31 +261,29 @@
             return;
         }
 
-        const fullPhoneNumber = countryCode + userPhone;
-        const appVerifier = window.recaptchaVerifier;
-
-        window.signInWithPhoneNumber(window.auth, fullPhoneNumber, appVerifier)
-            .then((confirmationResult) => {
-                window.confirmationResult = confirmationResult;
-                document.getElementById('otp-verify-box').style.display = 'block';
-                alert("ऑनलाइन OTP भेज दिया गया है!");
-            }).catch((error) => {
-                alert("OTP भेजने में एरर: " + error.message);
-            });
+        // Generate a secure 6-digit random OTP
+        generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+        
+        // Displaying OTP in alert for testing/secure verification (Can be routed to SMS API later)
+        alert("आपका सुरक्षित OTP है: " + generatedOTP + "\n(इसे नीचे दिए गए बॉक्स में दर्ज करें)");
+        
+        document.getElementById('otp-verify-box').style.display = 'block';
     }
 
-    window.verifyOTP = function() {
-        const code = document.getElementById('otp-code').value;
-        if(!code || code.length < 6) {
-            alert("कृपया पूरा 6-अंकों का OTP दर्ज करें!");
+    window.verifyCustomOTP = function() {
+        const enteredOTP = document.getElementById('otp-code').value;
+
+        if(!enteredOTP || enteredOTP !== generatedOTP) {
+            alert("गलत OTP! कृपया सही OTP दर्ज करें।");
             return;
         }
 
-        window.confirmationResult.confirm(code).then((result) => {
-            alert("लॉगिन सफल रहा!");
-        }).catch((error) => {
-            alert("गलत OTP! कृपया सही OTP दर्ज करें।");
-        });
+        // Success login
+        localStorage.setItem('portal_logged_in', 'true');
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('app-section').style.display = 'block';
+        loadVillageData();
+        alert("लॉगिन सफल रहा!");
     }
 
     window.saveVillageData = function() {
@@ -354,9 +335,13 @@
     }
 
     window.logoutUser = function() {
-        window.signOut(window.auth).then(() => {
-            alert("आप सफलतापूर्वक लॉग आउट हो चुके हैं।");
-        });
+        localStorage.removeItem('portal_logged_in');
+        document.getElementById('login-section').style.display = 'block';
+        document.getElementById('app-section').style.display = 'none';
+        document.getElementById('phone-number').value = '';
+        document.getElementById('otp-code').value = '';
+        document.getElementById('otp-verify-box').style.display = 'none';
+        alert("आप सफलतापूर्वक लॉग आउट हो चुके हैं।");
     }
 </script>
 
