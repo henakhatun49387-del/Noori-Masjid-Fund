@@ -19,6 +19,7 @@
         th { background: #f2f2f2; }
         .logout-btn { background: #e74c3c; width: auto; padding: 5px 15px; float: right; font-size: 14px; margin-top: 0; }
         .logout-btn:hover { background: #c0392b; }
+        #recaptcha-container { margin: 15px 0; display: flex; justify-content: center; }
     </style>
 </head>
 <body>
@@ -33,6 +34,10 @@
             <label>Mobile Number (+91 lagayein)</label>
             <input type="text" id="phone-number" value="+91" placeholder="+91XXXXXXXXXX">
         </div>
+        
+        <!-- Recaptcha Container Visible rakha hai -->
+        <div id="recaptcha-container"></div>
+
         <button id="send-otp-btn" onclick="sendOTP()">Send OTP</button>
         
         <div id="otp-group" class="hidden" style="margin-top: 15px;">
@@ -42,7 +47,6 @@
             </div>
             <button onclick="verifyOTP()">Verify OTP & Login</button>
         </div>
-        <div id="recaptcha-container"></div>
     </div>
 
     <!-- Dashboard Section (Hidden until login) -->
@@ -59,7 +63,7 @@
         </div>
         <div class="form-group">
             <label>Work / Details (विवरण)</label>
-            <input type="text" id="res-details" placeholder="Jaise: Kisan / Majدور">
+            <input type="text" id="res-details" placeholder="Jaise: Kisan / Majdoor">
         </div>
         <button onclick="saveData()">Save Entry</button>
 
@@ -85,9 +89,8 @@
     import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Yahan apna asli firebaseConfig dalein jo aapko mila hai
     const firebaseConfig = {
-        apiKey: "AIzaSyAh...
+        apiKey: "AIzaSyAhT911tNs@t15w70Ic4rj0-kgRTaKu78", // Aapki asli key yahan hai
         authDomain: "monthly-salary-2a1bd.firebaseapp.com",
         databaseURL: "https://monthly-salary-2a1bd-default-rtdb.firebaseio.com",
         projectId: "monthly-salary-2a1bd",
@@ -127,11 +130,17 @@
     // Send OTP function
     window.sendOTP = function() {
         const phoneNumber = document.getElementById('phone-number').value;
+        
         if(!window.recaptchaVerifier) {
             window.recaptchaVerifier = new window.RecaptchaVerifier(window.auth, 'recaptcha-container', {
-                'size': 'invisible'
+                'size': 'normal', // Normal size taaki recaptcha saaf dikhe aur click ho sake
+                'callback': (response) => {
+                    // reCAPTCHA solved
+                }
             });
+            window.recaptchaVerifier.render();
         }
+
         const appVerifier = window.recaptchaVerifier;
         window.signInWithPhoneNumber(window.auth, phoneNumber, appVerifier)
             .then((confirmationResult) => {
@@ -140,7 +149,7 @@
                 document.getElementById('otp-group').classList.remove('hidden');
             }).catch((error) => {
                 console.error(error);
-                alert("OTP bhejne mein error aaya: " + error.message);
+                alert("OTP bhejne mein error: " + error.message);
             });
     }
 
