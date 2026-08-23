@@ -3,347 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Village Portal - गाँव डिजिटल पोर्टल</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Digital Village Portal - Login</title>
     <style>
-        :root {
-            --primary: #4f46e5;
-            --primary-dark: #4338ca;
-            --success: #10b981;
-            --danger: #ef4444;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-color: #cbd5e1;
-        }
-
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-color);
-            margin: 0;
-            padding: 20px;
-            color: var(--text-main);
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 520px;
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-        }
-
-        .portal-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .portal-header h2 {
+            height: 100vh;
             margin: 0;
-            color: var(--text-main);
-            font-size: 24px;
-            font-weight: 700;
         }
-
-        .portal-header p {
-            margin: 5px 0 0 0;
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        .card {
+        .login-container {
             background: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
             margin-bottom: 20px;
         }
-
-        .card h3 {
-            margin-top: 0;
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-main);
-            border-bottom: 2px solid #f1f5f9;
-            padding-bottom: 10px;
+        .input-group {
             margin-bottom: 15px;
+            text-align: left;
         }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
         label {
             display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            font-size: 13px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 14px;
         }
-
-        .phone-box {
-            display: flex;
-            gap: 10px;
-        }
-
-        .country-code {
-            width: 80px;
-            text-align: center;
-            font-weight: 600;
-            background: #f1f5f9;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-        }
-
         input {
             width: 100%;
-            padding: 12px 14px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
             box-sizing: border-box;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 15px;
-            outline: none;
-            background: #fff;
         }
-
-        input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-        }
-
         button {
             width: 100%;
-            padding: 12px;
+            padding: 11px;
+            background: #007bff;
             border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
             cursor: pointer;
-            margin-top: 5px;
+            margin-top: 10px;
         }
-
-        .btn-primary { background: var(--primary); color: #fff; }
-        .btn-primary:hover { background: var(--primary-dark); }
-        .btn-success { background: var(--success); color: #fff; }
-        .btn-success:hover { background: #059669; }
-        .btn-danger { background: var(--danger); color: #fff; margin-top: 15px; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
-        th, td { border-bottom: 1px solid #f1f5f9; padding: 12px 10px; text-align: left; }
-        th { background: #f8fafc; color: var(--text-muted); font-weight: 600; font-size: 13px; }
-
-        #app-section { display: none; }
+        button:hover {
+            background: #0056b3;
+        }
+        #otpSection {
+            display: none;
+        }
+        .message {
+            margin-top: 15px;
+            font-size: 14px;
+            color: green;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="portal-header">
-        <h2>🏡 Digital Village Portal</h2>
-        <p>गाँव का डिजिटल डेटा और सूचना प्रबंधन केंद्र</p>
+    <div class="login-container">
+        <h2>Digital Village Portal</h2>
+        
+        <!-- Phone Number Section -->
+        <div id="phoneSection">
+            <div class="input-group">
+                <label for="phone">मोबाइल नंबर दर्ज करें</label>
+                <input type="tel" id="phone" placeholder="9876543210" maxlength="10">
+            </div>
+            <button onclick="sendOTP()">OTP भेजें</button>
+        </div>
+
+        <!-- OTP Verification Section -->
+        <div id="otpSection">
+            <div class="input-group">
+                <label for="otp">ओटीपी (OTP) दर्ज करें</label>
+                <input type="text" id="otp" placeholder="123456" maxlength="6">
+            </div>
+            <button onclick="verifyOTP()">लॉग इन करें</button>
+        </div>
+
+        <div class="message" id="msg"></div>
     </div>
 
-    <!-- 1. SECURE CUSTOM OTP LOGIN SECTION -->
-    <div id="login-section" class="card">
-        <h3>सुरक्षित पोर्टल लॉगिन (OTP)</h3>
-        <div class="form-group">
-            <label>मोबाइल नंबर</label>
-            <div class="phone-box">
-                <input type="text" id="country-code" class="country-code" value="+91" readonly>
-                <input type="tel" id="phone-number" placeholder="10-अंक का नंबर दर्ज करें" maxlength="10">
-            </div>
-        </div>
-        
-        <button class="btn-primary" onclick="requestOTP()">OTP प्राप्त करें</button>
+    <script>
+        const scriptURL = "https://script.google.com/macros/s/AKfycbz13IV5Jpax4_B1w15dXXX826Q5eUK3KCcELKd5EkOuhZEYVBg12u9JgjDC_f6pc1Z3Cw/exec";
+        let generatedOTP = "";
 
-        <div id="otp-verify-box" style="display:none; margin-top: 20px;">
-            <div class="form-group">
-                <label>6-अंकों का OTP दर्ज करें</label>
-                <input type="text" id="otp-code" placeholder="यहाँ OTP लिखें (जैसे स्क्रीन पर दिखेगा)" maxlength="6">
-            </div>
-            <button class="btn-success" onclick="verifyCustomOTP()">सत्यापित करें & लॉगिन</button>
-        </div>
-    </div>
+        function sendOTP() {
+            const phone = document.getElementById("phone").value;
+            const msg = document.getElementById("msg");
 
-    <!-- 2. MAIN PORTAL SECTION -->
-    <div id="app-section">
-        <div class="card" style="background: #f8fafc;">
-            <h3>नया निवासी रिकॉर्ड जोड़ें</h3>
-            <div class="form-group">
-                <label>निवासी का नाम</label>
-                <input type="text" id="res-name" placeholder="पूरा नाम लिखें">
-            </div>
-            <div class="form-group">
-                <label>वार्ड नंबर / मकान नंबर</label>
-                <input type="text" id="res-ward" placeholder="जैसे: वार्ड नंबर 03">
-            </div>
-            <div class="form-group">
-                <label>विवरण / पेशा</label>
-                <input type="text" id="res-details" placeholder="जैसे: किसान / व्यापारी / नौकरी">
-            </div>
-            <button class="btn-success" onclick="saveVillageData()">रिकॉर्ड सुरक्षित करें</button>
-        </div>
-
-        <div class="card">
-            <h3>गाँव की जानकारी सूची</h3>
-            <div style="overflow-x: auto;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>नाम</th>
-                            <th>वार्ड</th>
-                            <th>विवरण</th>
-                        </tr>
-                    </thead>
-                    <tbody id="village-table-body">
-                        <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">लोड हो रहा है...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <button class="btn-danger" onclick="logoutUser()">लॉग आउट (बाहर जाएं)</button>
-    </div>
-</div>
-
-<!-- Firebase SDKs for Realtime Database -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAhhT911tNs0t15w70Ic4rjO-kgRTaKu78",
-      authDomain: "monthly-salary-2a1bd.firebaseapp.com",
-      databaseURL: "https://monthly-salary-2a1bd-default-rtdb.firebaseio.com",
-      projectId: "monthly-salary-2a1bd",
-      storageBucket: "monthly-salary-2a1bd.firebasestorage.app",
-      messagingSenderId: "766706380489",
-      appId: "1:766706380489:web:0de4f388c2719c0bb3a718",
-      measurementId: "G-YSDBJSW02X"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    window.db = db;
-    window.ref = ref;
-    window.push = push;
-    window.set = set;
-    window.onValue = onValue;
-
-    // Check previous login session
-    window.onload = function() {
-        if(localStorage.getItem('portal_logged_in') === 'true') {
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('app-section').style.display = 'block';
-            loadVillageData();
-        }
-    };
-</script>
-
-<script>
-    let generatedOTP = "";
-
-    window.requestOTP = function() {
-        const userPhone = document.getElementById('phone-number').value;
-
-        if(!userPhone || userPhone.length < 10) {
-            alert("कृपया सही 10-अंकों का मोबाइल नंबर दर्ज करें!");
-            return;
-        }
-
-        // Generate a secure 6-digit random OTP
-        generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-        
-        // Displaying OTP in alert for testing/secure verification (Can be routed to SMS API later)
-        alert("आपका सुरक्षित OTP है: " + generatedOTP + "\n(इसे नीचे दिए गए बॉक्स में दर्ज करें)");
-        
-        document.getElementById('otp-verify-box').style.display = 'block';
-    }
-
-    window.verifyCustomOTP = function() {
-        const enteredOTP = document.getElementById('otp-code').value;
-
-        if(!enteredOTP || enteredOTP !== generatedOTP) {
-            alert("गलत OTP! कृपया सही OTP दर्ज करें।");
-            return;
-        }
-
-        // Success login
-        localStorage.setItem('portal_logged_in', 'true');
-        document.getElementById('login-section').style.display = 'none';
-        document.getElementById('app-section').style.display = 'block';
-        loadVillageData();
-        alert("लॉगिन सफल रहा!");
-    }
-
-    window.saveVillageData = function() {
-        const name = document.getElementById('res-name').value;
-        const ward = document.getElementById('res-ward').value;
-        const details = document.getElementById('res-details').value;
-
-        if(!name || !ward) {
-            alert("कृपया नाम और वार्ड नंबर अवश्य भरें!");
-            return;
-        }
-
-        const dbRef = window.ref(window.db, 'gaon_records');
-        const newRef = window.push(dbRef);
-        window.set(newRef, {
-            name: name,
-            ward: ward,
-            details: details,
-            timestamp: Date.now()
-        }).then(() => {
-            alert("गाँव का रिकॉर्ड सफलतापूर्वक सुरक्षित हो गया!");
-            document.getElementById('res-name').value = '';
-            document.getElementById('res-ward').value = '';
-            document.getElementById('res-details').value = '';
-        }).catch((error) => {
-            alert("Error: " + error.message);
-        });
-    }
-
-    function loadVillageData() {
-        const dbRef = window.ref(window.db, 'gaon_records');
-        window.onValue(dbRef, (snapshot) => {
-            const tbody = document.getElementById('village-table-body');
-            tbody.innerHTML = '';
-            const data = snapshot.val();
-            if(data) {
-                Object.values(data).forEach(record => {
-                    const row = `<tr>
-                        <td>${record.name}</td>
-                        <td>${record.ward}</td>
-                        <td>${record.details || '-'}</td>
-                    </tr>`;
-                    tbody.innerHTML += row;
-                });
-            } else {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">अभी कोई रिकॉर्ड मौजूद नहीं है।</td></tr>`;
+            if (phone.length !== 10) {
+                alert("कृपया सही 10 अंकों का मोबाइल नंबर दर्ज करें!");
+                return;
             }
-        });
-    }
 
-    window.logoutUser = function() {
-        localStorage.removeItem('portal_logged_in');
-        document.getElementById('login-section').style.display = 'block';
-        document.getElementById('app-section').style.display = 'none';
-        document.getElementById('phone-number').value = '';
-        document.getElementById('otp-code').value = '';
-        document.getElementById('otp-verify-box').style.display = 'none';
-        alert("आप सफलतापूर्वक लॉग आउट हो चुके हैं।");
-    }
-</script>
+            // 6 अंकों का रैंडम ओटीपी जनरेट करना
+            generatedOTP = Math.floor(100000 + Math.random() * 900000);
+            msg.style.color = "blue";
+            msg.innerText = "ओटीपी भेजा जा रहा है...";
+
+            // Google Apps Script को डेटा भेजना
+            fetch(`${scriptURL}?phone=${phone}&otp=${generatedOTP}`)
+                .then(response => response.json())
+                .then(data => {
+                    msg.style.color = "green";
+                    msg.innerText = "OTP सफलतापूर्वक भेज दिया गया है! (डबग OTP: " + generatedOTP + ")";
+                    document.getElementById("phoneSection").style.display = "none";
+                    document.getElementById("otpSection").style.display = "block";
+                })
+                .catch(error => {
+                    console.error('Error!', error.message);
+                    msg.style.color = "red";
+                    msg.innerText = "कनेक्शन में समस्या आई, पुनः प्रयास करें।";
+                });
+        }
+
+        function verifyOTP() {
+            const userOTP = document.getElementById("otp").value;
+            const msg = document.getElementById("msg");
+
+            if (userOTP == generatedOTP) {
+                msg.style.color = "green";
+                msg.innerText = "लॉग इन सफल! पोर्टल पर रीडायरेक्ट हो रहे हैं...";
+                setTimeout(() => {
+                    alert("Welcome to Digital Village Portal!");
+                    // यहाँ आप पोर्टल के होमपेज का लिंक या कोड जोड़ सकते हैं
+                }, 1000);
+            } else {
+                msg.style.color = "red";
+                msg.innerText = "गलत OTP! कृपया दोबारा चेक करें।";
+            }
+        }
+    </script>
 
 </body>
 </html>
