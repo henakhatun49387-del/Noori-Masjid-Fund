@@ -165,17 +165,16 @@
             </div>
         </div>
         
-        <!-- Visible reCAPTCHA container for authentic Google SMS verification -->
         <div id="recaptcha-container"></div>
 
-        <button class="btn-primary" onclick="sendOTP()">Google से OTP भेजें</button>
+        <button class="btn-primary" onclick="sendOTP()">ऑनलाइन OTP भेजें</button>
 
         <div id="otp-verify-box" style="display:none; margin-top: 20px;">
             <div class="form-group">
-                <label>6-अंकों का Google OTP दर्ज करें</label>
+                <label>6-अंकों का OTP दर्ज करें</label>
                 <input type="text" id="otp-code" placeholder="यहाँ OTP लिखें" maxlength="6">
             </div>
-            <button class="btn-success" onclick="verifyOTP()">OTP सत्यापित करें & लॉगिन</button>
+            <button class="btn-success" onclick="verifyOTP()">सत्यापित करें & लॉगिन</button>
         </div>
     </div>
 
@@ -250,16 +249,9 @@
     window.set = set;
     window.onValue = onValue;
 
-    // Setting up Visible reCAPTCHA to prevent bypass and trigger real Google SMS
     window.onload = function() {
         window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-            'size': 'normal',
-            'callback': (response) => {
-                // reCAPTCHA solved
-            },
-            'expired-callback': () => {
-                // Response expired
-            }
+            'size': 'normal'
         });
         window.recaptchaVerifier.render();
     };
@@ -293,17 +285,16 @@
             .then((confirmationResult) => {
                 window.confirmationResult = confirmationResult;
                 document.getElementById('otp-verify-box').style.display = 'block';
-                alert("Google की तरफ से OTP भेज दिया गया है!");
+                alert("ऑनलाइन OTP भेज दिया गया है!");
             }).catch((error) => {
                 alert("OTP भेजने में एरर: " + error.message);
-                grecaptcha.reset(window.recaptchaWidgetId);
             });
     }
 
     window.verifyOTP = function() {
         const code = document.getElementById('otp-code').value;
         if(!code || code.length < 6) {
-            alert("कृपया पूरा 6-अंकों का असली OTP दर्ज करें!");
+            alert("कृपया पूरा 6-अंकों का OTP दर्ज करें!");
             return;
         }
 
