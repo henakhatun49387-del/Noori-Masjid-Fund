@@ -4,91 +4,272 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Village Portal - गाँव डिजिटल पोर्टल</title>
+    <!-- Google Fonts for Professional Look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 15px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { color: #2c3e50; text-align: center; margin-bottom: 20px; }
-        .card { background: #fafafa; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px; }
-        .form-group { margin-bottom: 12px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
-        .phone-box { display: flex; gap: 8px; }
-        .country-code { width: 75px; text-align: center; font-weight: bold; background: #eee; }
-        input, button { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; font-size: 15px; }
-        button { background: #27ae60; color: #fff; border: none; cursor: pointer; font-weight: bold; margin-top: 5px; }
-        button:hover { background: #219653; }
-        .btn-primary { background: #2980b9; }
-        .btn-primary:hover { background: #1f618d; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background: #e8f4f8; color: #2c3e50; }
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 520px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .portal-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .portal-header h2 {
+            margin: 0;
+            color: var(--text-main);
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .portal-header p {
+            margin: 5px 0 0 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-main);
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .phone-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .country-code {
+            width: 80px;
+            text-align: center;
+            font-weight: 600;
+            background: #f1f5f9;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: #fff;
+            margin-top: 10px;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+            margin-top: 15px;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        th, td {
+            border-bottom: 1px solid #f1f5f9;
+            padding: 12px 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        td {
+            color: var(--text-main);
+        }
+
         #app-section { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🏡 Digital Village Portal</h2>
+    <div class="portal-header">
+        <h2>🏡 Digital Village Portal</h2>
+        <p>गाँव का डिजिटल डेटा और सूचना प्रबंधन केंद्र</p>
+    </div>
 
-    <!-- 1. PHONE & OTP LOGIN SECTION -->
+    <!-- 1. PROFESSIONAL OTP LOGIN SECTION -->
     <div id="login-section" class="card">
-        <h3 style="margin-top:0;">Mobile OTP Login</h3>
+        <h3>सुरक्षित मोबाइल लॉगिन</h3>
         <div class="form-group">
-            <label>Mobile Number</label>
+            <label>मोबाइल नंबर</label>
             <div class="phone-box">
                 <input type="text" id="country-code" class="country-code" value="+91" readonly>
-                <input type="tel" id="phone-number" placeholder="10-ank ka mobile number" maxlength="10">
+                <input type="tel" id="phone-number" placeholder="10-अंक का नंबर दर्ज करें" maxlength="10">
             </div>
         </div>
-        <!-- Invisible container for Firebase Auth (No ReCaptcha UI needed) -->
         <div id="recaptcha-container"></div>
-        <button class="btn-primary" onclick="sendOTP()">OTP Bhejein</button>
+        <button class="btn-primary" onclick="sendOTP()">OTP भेजें</button>
 
-        <div id="otp-verify-box" style="display:none; margin-top: 15px;">
+        <div id="otp-verify-box" style="display:none; margin-top: 20px;">
             <div class="form-group">
-                <label>6-digit OTP Daalein</label>
-                <input type="text" id="otp-code" placeholder="OTP yahan likhein" maxlength="6">
+                <label>6-अंकों का OTP दर्ज करें</label>
+                <input type="text" id="otp-code" placeholder="यहाँ OTP लिखें" maxlength="6">
             </div>
-            <button onclick="verifyOTP()">Verify OTP & Login</button>
+            <button class="btn-success" onclick="verifyOTP()">सत्यापित करें & लॉगिन करें</button>
         </div>
     </div>
 
     <!-- 2. MAIN VILLAGE PORTAL SECTION -->
     <div id="app-section">
-        <div class="card" style="background: #eef9ff;">
-            <h3 style="margin-top:0;">Gaon Naya Record Jodein</h3>
+        <div class="card" style="background: #f8fafc;">
+            <h3>नया निवासी रिकॉर्ड जोड़ें</h3>
             <div class="form-group">
-                <label>Niwasi ka Naam (Resident Name)</label>
-                <input type="text" id="res-name" placeholder="Pura naam likhein">
+                <label>निवासी का नाम</label>
+                <input type="text" id="res-name" placeholder="पूरा नाम लिखें">
             </div>
             <div class="form-group">
-                <label>Ward No. / Makan No.</label>
-                <input type="text" id="res-ward" placeholder="Jaise: Ward No. 3">
+                <label>वार्ड नंबर / मकान नंबर</label>
+                <input type="text" id="res-ward" placeholder="जैसे: वार्ड नंबर 03">
             </div>
             <div class="form-group">
-                <label>Vivaran / Kaam (Details)</label>
-                <input type="text" id="res-details" placeholder="Jaise: Kisan / Vyapar / Job">
+                <label>विवरण / पेशा</label>
+                <input type="text" id="res-details" placeholder="जैसे: किसान / व्यापारी / नौकरी">
             </div>
-            <button onclick="saveVillageData()">Data Save Karein</button>
+            <button class="btn-success" onclick="saveVillageData()">रिकॉर्ड सुरक्षित करें</button>
         </div>
 
         <div class="card">
-            <h3 style="margin-top:0;">Gaon Ki Jankari List</h3>
+            <h3>गाँव की जानकारी सूची</h3>
             <div style="overflow-x: auto;">
                 <table>
                     <thead>
                         <tr>
-                            <th>Naam</th>
-                            <th>Ward</th>
-                            <th>Vivaran</th>
+                            <th>नाम</th>
+                            <th>वार्ड</th>
+                            <th>विवरण</th>
                         </tr>
                     </thead>
                     <tbody id="village-table-body">
-                        <tr><td colspan="3" style="text-align: center;">Load ho raha hai...</td></tr>
+                        <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">लोड हो रहा है...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
-        <button style="background: #c0392b;" onclick="logoutUser()">Logout</button>
+        <button class="btn-danger" onclick="logoutUser()">लॉग आउट (बाहर जाएं)</button>
     </div>
 </div>
 
@@ -123,7 +304,6 @@
     window.set = set;
     window.onValue = onValue;
 
-    // Invisible Recaptcha setup (koi robot box nahi dikhega)
     window.onload = function() {
         window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
             'size': 'invisible'
@@ -148,7 +328,7 @@
         const userPhone = document.getElementById('phone-number').value;
 
         if(!userPhone || userPhone.length < 10) {
-            alert("Kripya sahi 10-ank ka mobile number daalein!");
+            alert("कृपया सही 10-अंकों का मोबाइल नंबर दर्ज करें!");
             return;
         }
 
@@ -159,23 +339,23 @@
             .then((confirmationResult) => {
                 window.confirmationResult = confirmationResult;
                 document.getElementById('otp-verify-box').style.display = 'block';
-                alert("OTP bhej diya gaya hai!");
+                alert("OTP सफलतापर्वक भेज दिया गया है!");
             }).catch((error) => {
-                alert("OTP bhejne mein error: " + error.message);
+                alert("OTP भेजने में एरर: " + error.message);
             });
     }
 
     window.verifyOTP = function() {
         const code = document.getElementById('otp-code').value;
         if(!code || code.length < 6) {
-            alert("Kripya pura 6-ank ka OTP daalein!");
+            alert("कृपया पूरा 6-अंकों का OTP दर्ज करें!");
             return;
         }
 
         window.confirmationResult.confirm(code).then((result) => {
-            alert("Login safal raha!");
+            alert("लॉगिन सफल रहा!");
         }).catch((error) => {
-            alert("Galat OTP! Kripya dobara koshish karein.");
+            alert("गलत OTP! कृपया दोबारा कोशिश करें।");
         });
     }
 
@@ -185,7 +365,7 @@
         const details = document.getElementById('res-details').value;
 
         if(!name || !ward) {
-            alert("Kripya naam aur ward number bharein!");
+            alert("कृपया नाम और वार्ड नंबर अवश्य भरें!");
             return;
         }
 
@@ -197,7 +377,7 @@
             details: details,
             timestamp: Date.now()
         }).then(() => {
-            alert("Gaon ka data safalpurvak save ho gaya!");
+            alert("गाँव का रिकॉर्ड सफलतापूर्वक सुरक्षित हो गया!");
             document.getElementById('res-name').value = '';
             document.getElementById('res-ward').value = '';
             document.getElementById('res-details').value = '';
@@ -222,14 +402,14 @@
                     tbody.innerHTML += row;
                 });
             } else {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center;">Abhi koi data nahi hai.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">अभी कोई रिकॉर्ड मौजूद नहीं है।</td></tr>`;
             }
         });
     }
 
     window.logoutUser = function() {
         window.signOut(window.auth).then(() => {
-            alert("Aap logout ho gaye hain.");
+            alert("आप सफलतापूर्वक लॉग आउट हो चुके हैं।");
         });
     }
 </script>
