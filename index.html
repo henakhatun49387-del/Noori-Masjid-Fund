@@ -35,7 +35,6 @@
             <input type="text" id="phone-number" value="+91" placeholder="+91XXXXXXXXXX">
         </div>
         
-        <!-- Recaptcha Container Visible rakha hai -->
         <div id="recaptcha-container"></div>
 
         <button id="send-otp-btn" onclick="sendOTP()">Send OTP</button>
@@ -90,7 +89,7 @@
     import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyAhT911tNs@t15w70Ic4rj0-kgRTaKu78", // Aapki asli key yahan hai
+        apiKey: "YOUR_REAL_API_KEY_HERE", // Yahan apni Firebase ki bilkul sahi API Key dalein
         authDomain: "monthly-salary-2a1bd.firebaseapp.com",
         databaseURL: "https://monthly-salary-2a1bd-default-rtdb.firebaseio.com",
         projectId: "monthly-salary-2a1bd",
@@ -113,7 +112,6 @@
     window.set = set;
     window.onValue = onValue;
 
-    // Check login state
     onAuthStateChanged(auth, (user) => {
         if (user) {
             document.getElementById('login-section').classList.add('hidden');
@@ -127,16 +125,13 @@
 </script>
 
 <script>
-    // Send OTP function
     window.sendOTP = function() {
         const phoneNumber = document.getElementById('phone-number').value;
         
         if(!window.recaptchaVerifier) {
             window.recaptchaVerifier = new window.RecaptchaVerifier(window.auth, 'recaptcha-container', {
-                'size': 'normal', // Normal size taaki recaptcha saaf dikhe aur click ho sake
-                'callback': (response) => {
-                    // reCAPTCHA solved
-                }
+                'size': 'normal',
+                'callback': (response) => {}
             });
             window.recaptchaVerifier.render();
         }
@@ -153,7 +148,6 @@
             });
     }
 
-    // Verify OTP function
     window.verifyOTP = function() {
         const otpCode = document.getElementById('otp-code').value;
         window.confirmationResult.confirm(otpCode).then((result) => {
@@ -163,7 +157,6 @@
         });
     }
 
-    // Save Data to Realtime Database
     window.saveData = function() {
         const name = document.getElementById('res-name').value;
         const ward = document.getElementById('res-ward').value;
@@ -191,7 +184,6 @@
         });
     }
 
-    // Load Village History/Data
     function loadVillageData() {
         const dbRef = window.ref(window.db, 'village_records');
         window.onValue(dbRef, (snapshot) => {
@@ -213,7 +205,6 @@
         });
     }
 
-    // Logout
     window.logout = function() {
         window.auth.signOut();
     }
